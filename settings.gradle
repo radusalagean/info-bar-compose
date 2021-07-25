@@ -7,4 +7,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "InfoBar Compose"
-include ':app'
+include ':infobarcompose-sample'
+include ':infobarcompose'
