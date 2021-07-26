@@ -7,8 +7,8 @@ data class InfoBarMessage private constructor(
     val textString: String? = null,
     @StringRes val textStringRes: Int? = null,
     val textStringArgs: List<Any>? = null,
-    val textColor: Color,
-    val backgroundColor: Color,
+    val textColor: Color? = null,
+    val backgroundColor: Color? = null,
     val displayTimeSeconds: Int?,
     val creationTime: Long = System.currentTimeMillis()
 ) {
@@ -17,8 +17,8 @@ data class InfoBarMessage private constructor(
 
         fun create(
             textString: String,
-            textColor: Color = Color.White,
-            backgroundColor: Color = Color.DarkGray,
+            textColor: Color? = null,
+            backgroundColor: Color? = null,
             displayTimeSeconds: Int? = 4
         ) = InfoBarMessage(
             textString = textString,
@@ -30,8 +30,8 @@ data class InfoBarMessage private constructor(
         fun create(
             textStringRes: Int,
             textStringArgs: List<Any>? = null,
-            textColor: Color = Color.White,
-            backgroundColor: Color = Color.DarkGray,
+            textColor: Color? = null,
+            backgroundColor: Color? = null,
             displayTimeSeconds: Int? = 4
         ) = InfoBarMessage(
             textStringRes = textStringRes,

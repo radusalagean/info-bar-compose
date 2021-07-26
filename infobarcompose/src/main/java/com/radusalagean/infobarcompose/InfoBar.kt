@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -41,7 +42,9 @@ fun InfoBar(
     offeredMessage: InfoBarMessage?,
     elevation: Dp = 6.dp,
     shape: Shape = MaterialTheme.shapes.small,
+    backgroundColor: Color? = null,
     textPadding: InfoBarPadding = InfoBarPadding.default,
+    textColor: Color? = null,
     textFontSize: TextUnit = 16.sp,
     textFontStyle: FontStyle? = null,
     textFontWeight: FontWeight? = null,
@@ -122,7 +125,7 @@ fun InfoBar(
             Surface(
                 elevation = elevation,
                 shape = shape,
-                color = message.backgroundColor
+                color = message.backgroundColor ?: backgroundColor ?: Color.DarkGray
             ) {
                 Text(
                     modifier = Modifier.padding(
@@ -132,7 +135,7 @@ fun InfoBar(
                         bottom = textPadding.bottom
                     ),
                     text = message.textString ?: stringResourceForMessage(message),
-                    color = message.textColor,
+                    color = message.textColor ?: textColor ?: Color.White,
                     fontSize = textFontSize,
                     fontStyle = textFontStyle,
                     fontWeight = textFontWeight,
