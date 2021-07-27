@@ -15,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -34,41 +33,28 @@ const val SHOW_DELAY = 200L
 
 @ExperimentalAnimationApi
 @Composable
-fun InfoBar(
+fun <T : BaseInfoBarMessage> InfoBar(
     modifier: Modifier = Modifier,
-    offeredMessage: InfoBarMessage?,
+    offeredMessage: T?,
     elevation: Dp = 6.dp,
     shape: Shape = MaterialTheme.shapes.small,
     backgroundColor: Color? = null,
-    textPadding: InfoBarPadding = InfoBarPadding.default,
-    textColor: Color? = null,
-    textFontSize: TextUnit = 16.sp,
-    textFontStyle: FontStyle? = null,
-    textFontWeight: FontWeight? = null,
-    textFontFamily: FontFamily? = null,
-    textLetterSpacing: TextUnit = TextUnit.Unspecified,
-    textDecoration: TextDecoration? = null,
-    textAlign: TextAlign? = TextAlign.Center,
-    textLineHeight: TextUnit = TextUnit.Unspecified,
-    textMaxLines: Int = 5,
-    textStyle: TextStyle = LocalTextStyle.current,
+    content: @Composable (T) -> Unit,
     fadeEffect: Boolean = true,
     slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.FROM_TOP,
     enterTransitionMillis: Int = 150,
     exitTransitionMillis: Int = 250,
     onMessageTimeout: () -> Unit
 ) {
-    val displayedMessage: MutableState<InfoBarMessage?> = remember { mutableStateOf(null) }
+    val displayedMessage: MutableState<T?> = remember { mutableStateOf(null) }
     val isShown: MutableState<Boolean> = remember { mutableStateOf(false) }
-    offeredMessage?.let { offeredMessage ->
-        LaunchedEffect(offeredMessage) {
-            showMessage(
-                offeredMessage = offeredMessage,
-                displayedMessage = displayedMessage,
-                isShown = isShown,
-                onMessageTimeout = onMessageTimeout
-            )
-        }
+    LaunchedEffect(offeredMessage) {
+        handleOfferedMessage(
+            offeredMessage = offeredMessage,
+            displayedMessage = displayedMessage,
+            isShown = isShown,
+            onMessageTimeout = onMessageTimeout
+        )
     }
     var enterTransition = EnterTransition.None
     var exitTransition = ExitTransition.None
@@ -122,43 +108,89 @@ fun InfoBar(
             Surface(
                 elevation = elevation,
                 shape = shape,
-                color = message.backgroundColor ?: backgroundColor ?: Color.DarkGray
+                color = message.backgroundColor ?: backgroundColor ?: SnackbarDefaults.backgroundColor,
+                contentColor = MaterialTheme.colors.surface
             ) {
-                Text(
-                    modifier = Modifier.padding(
-                        start = textPadding.start,
-                        top = textPadding.top,
-                        end = textPadding.end,
-                        bottom = textPadding.bottom
-                    ),
-                    text = message.textString,
-                    color = message.textColor ?: textColor ?: Color.White,
-                    fontSize = textFontSize,
-                    fontStyle = textFontStyle,
-                    fontWeight = textFontWeight,
-                    fontFamily = textFontFamily,
-                    letterSpacing = textLetterSpacing,
-                    textDecoration = textDecoration,
-                    textAlign = textAlign,
-                    lineHeight = textLineHeight,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = textMaxLines,
-                    style = textStyle
-                )
+                content(message)
             }
         }
     }
 }
 
-private suspend fun showMessage(
-    offeredMessage: InfoBarMessage,
-    displayedMessage: MutableState<InfoBarMessage?>,
+@ExperimentalAnimationApi
+@Composable
+fun InfoBar(
+    modifier: Modifier = Modifier,
+    offeredMessage: InfoBarMessage?,
+    elevation: Dp = 6.dp,
+    shape: Shape = MaterialTheme.shapes.small,
+    backgroundColor: Color? = null,
+    textPadding: InfoBarPadding = InfoBarPadding.default,
+    textColor: Color? = null,
+    textFontSize: TextUnit = 16.sp,
+    textFontStyle: FontStyle? = null,
+    textFontWeight: FontWeight? = null,
+    textFontFamily: FontFamily? = null,
+    textLetterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = TextAlign.Center,
+    textLineHeight: TextUnit = TextUnit.Unspecified,
+    textMaxLines: Int = 5,
+    textStyle: TextStyle = LocalTextStyle.current,
+    fadeEffect: Boolean = true,
+    slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.FROM_TOP,
+    enterTransitionMillis: Int = 150,
+    exitTransitionMillis: Int = 250,
+    onMessageTimeout: () -> Unit
+) {
+    val contentComposable: @Composable (InfoBarMessage) -> Unit = { message ->
+        Text(
+            modifier = Modifier.padding(
+                start = textPadding.start,
+                top = textPadding.top,
+                end = textPadding.end,
+                bottom = textPadding.bottom
+            ),
+            text = message.textString,
+            color = message.textColor ?: textColor ?: MaterialTheme.colors.surface,
+            fontSize = textFontSize,
+            fontStyle = textFontStyle,
+            fontWeight = textFontWeight,
+            fontFamily = textFontFamily,
+            letterSpacing = textLetterSpacing,
+            textDecoration = textDecoration,
+            textAlign = textAlign,
+            lineHeight = textLineHeight,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = textMaxLines,
+            style = textStyle
+        )
+    }
+    InfoBar(
+        modifier = modifier,
+        offeredMessage = offeredMessage,
+        elevation = elevation,
+        shape = shape,
+        backgroundColor = backgroundColor,
+        content = contentComposable,
+        fadeEffect = fadeEffect,
+        slideEffect = slideEffect,
+        enterTransitionMillis = enterTransitionMillis,
+        exitTransitionMillis = exitTransitionMillis,
+        onMessageTimeout = onMessageTimeout
+    )
+}
+
+private suspend fun <T : BaseInfoBarMessage> handleOfferedMessage(
+    offeredMessage: T?,
+    displayedMessage: MutableState<T?>,
     isShown: MutableState<Boolean>,
     onMessageTimeout: () -> Unit
 ) {
     isShown.value = false
     delay(SHOW_DELAY)
     displayedMessage.value = offeredMessage
+    if (offeredMessage == null) return
     isShown.value = true
     val delayTime = offeredMessage.displayTimeSeconds
         .takeUnless { it == null || it <= 0 }?.toLong() ?: Long.MAX_VALUE

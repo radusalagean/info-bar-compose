@@ -1,4 +1,4 @@
-package com.radusalagean.infobarcompose
+package com.radusalagean.infobarcompose.sample
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.radusalagean.infobarcompose", appContext.packageName)
+        assertEquals("com.radusalagean.infobarcompose.sample", appContext.packageName)
     }
 }

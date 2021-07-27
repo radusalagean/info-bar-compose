@@ -1,4 +1,4 @@
-package com.radusalagean.infobarcompose
+package com.radusalagean.infobarcompose.sample
 
 import org.junit.Test
 
