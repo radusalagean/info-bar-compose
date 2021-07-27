@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                                     .align(Alignment.CenterHorizontally),
                                 onClick = {
                                     if (textFieldState.isNotBlank()) {
-                                        infoBarMessage = InfoBarMessage.create(
+                                        infoBarMessage = InfoBarMessage(
                                             textString = textFieldState
                                         )
                                     }

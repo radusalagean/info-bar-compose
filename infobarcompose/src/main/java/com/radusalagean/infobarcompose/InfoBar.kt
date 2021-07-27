@@ -6,10 +6,7 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -134,7 +131,7 @@ fun InfoBar(
                         end = textPadding.end,
                         bottom = textPadding.bottom
                     ),
-                    text = message.textString ?: stringResourceForMessage(message),
+                    text = message.textString,
                     color = message.textColor ?: textColor ?: Color.White,
                     fontSize = textFontSize,
                     fontStyle = textFontStyle,
@@ -168,13 +165,4 @@ private suspend fun showMessage(
     delay(TimeUnit.SECONDS.toMillis(delayTime))
     isShown.value = false
     onMessageTimeout()
-}
-
-@Composable
-private fun stringResourceForMessage(message: InfoBarMessage): String {
-    return if (message.textStringRes == null) "" else {
-        message.textStringArgs?.let {
-            stringResource(message.textStringRes, *it.toTypedArray())
-        } ?: stringResource(message.textStringRes)
-    }
 }
