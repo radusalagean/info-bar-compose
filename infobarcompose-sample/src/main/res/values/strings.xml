@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">InfoBar Compose</string>
+
+    <string name="message_hint">Type a message…</string>
+    <string name="show_message_button">Show Message</string>
+    <string name="dismiss_button">Dismiss</string>
 </resources>

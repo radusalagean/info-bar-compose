@@ -8,16 +8,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.AccessibilityManager
 import androidx.compose.ui.platform.LocalAccessibilityManager
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
@@ -32,9 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-import java.util.concurrent.TimeUnit
 
 const val SHOW_DELAY = 200L
 
@@ -56,15 +49,25 @@ fun <T : BaseInfoBarMessage> InfoBar(
     val displayedMessage: MutableState<T?> = remember { mutableStateOf(null) }
     val isShown: MutableState<Boolean> = remember { mutableStateOf(false) }
     val accessibilityManager = LocalAccessibilityManager.current
-    LaunchedEffect(offeredMessage) {
-        handleOfferedMessage(
-            offeredMessage = offeredMessage,
-            displayedMessage = displayedMessage,
-            isShown = isShown,
-            accessibilityManager = accessibilityManager,
-            onMessageTimeout = onMessageTimeout
-        )
+
+    suspend fun handleOfferedMessage() {
+        isShown.value = false
+        delay(SHOW_DELAY)
+        displayedMessage.value = offeredMessage
+        if (offeredMessage == null) return
+        isShown.value = true
+        delay(enterTransitionMillis.toLong())
+        val delayTime = offeredMessage.getInfoBarTimeout(accessibilityManager)
+        delay(delayTime)
+        isShown.value = false
+        delay(exitTransitionMillis.toLong())
+        onMessageTimeout()
     }
+
+    LaunchedEffect(offeredMessage) {
+        handleOfferedMessage()
+    }
+
     var enterTransition = EnterTransition.None
     var exitTransition = ExitTransition.None
     if (slideEffect != InfoBarSlideEffect.NONE) {
@@ -108,7 +111,8 @@ fun <T : BaseInfoBarMessage> InfoBar(
         )
     }
     AnimatedVisibility(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .semantics {
                 liveRegion = LiveRegionMode.Polite
             },
@@ -168,7 +172,7 @@ fun InfoBar(
                 modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterVertically),
-                text = message.text,
+                text = message.getTextString(),
                 color = message.textColor ?: textColor ?: MaterialTheme.colors.surface,
                 fontSize = textFontSize,
                 fontStyle = textFontStyle,
@@ -176,14 +180,15 @@ fun InfoBar(
                 fontFamily = textFontFamily,
                 letterSpacing = textLetterSpacing,
                 textDecoration = textDecoration,
-                textAlign = textAlign ?: if (message.action != null)
+                textAlign = textAlign ?: if (!message.getActionString().isNullOrBlank())
                     TextAlign.Start else TextAlign.Center,
                 lineHeight = textLineHeight,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = textMaxLines,
                 style = textStyle
             )
-            if (!message.action.isNullOrBlank()) {
+            val actionString = message.getActionString()
+            if (!actionString.isNullOrBlank()) {
                 TextButton(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -194,7 +199,7 @@ fun InfoBar(
                         ?: SnackbarDefaults.primaryActionColor
                     )
                 ) {
-                    Text(message.action)
+                    Text(actionString)
                 }
             }
         }
@@ -212,22 +217,4 @@ fun InfoBar(
         exitTransitionMillis = exitTransitionMillis,
         onMessageTimeout = onMessageTimeout
     )
-}
-
-private suspend fun <T : BaseInfoBarMessage> handleOfferedMessage(
-    offeredMessage: T?,
-    displayedMessage: MutableState<T?>,
-    isShown: MutableState<Boolean>,
-    accessibilityManager: AccessibilityManager?,
-    onMessageTimeout: () -> Unit
-) {
-    isShown.value = false
-    delay(SHOW_DELAY)
-    displayedMessage.value = offeredMessage
-    if (offeredMessage == null) return
-    isShown.value = true
-    val delayTime = offeredMessage.getInfoBarTimeout(accessibilityManager)
-    delay(delayTime)
-    isShown.value = false
-    onMessageTimeout()
 }
