@@ -67,9 +67,9 @@ class MainActivity : ComponentActivity() {
                                     .align(Alignment.CenterHorizontally),
                                 onClick = {
                                     if (textFieldState.isNotBlank()) {
-//                                        infoBarMessage = InfoBarMessage(
-//                                            textString = textFieldState
-//                                        )
+                                        infoBarMessage = InfoBarMessage(
+                                            text = textFieldState
+                                        )
 //                                        customInfoBarMessage = CustomInfoBarMessage(
 //                                            bannerImage = R.drawable.banner_1,
 //                                            textString = textFieldState,
@@ -80,38 +80,56 @@ class MainActivity : ComponentActivity() {
 //                                        ) {
 //                                            customInfoBarMessage = null
 //                                        }
-                                        customInfoBarMessage = CustomInfoBarMessage(
-                                            bannerImage = R.drawable.banner_2,
-                                            textString = textFieldState,
-                                            textColor = Color(0xFFA80D0D),
-                                            actionString = "Dismiss",
-                                            actionColor = Color(0xFFF03535),
-                                            displayTimeSeconds = 4
-                                        ) {
-                                            customInfoBarMessage = null
-                                        }
+//                                        customInfoBarMessage = CustomInfoBarMessage(
+//                                            bannerImage = R.drawable.banner_2,
+//                                            textString = textFieldState,
+//                                            textColor = Color(0xFFA80D0D),
+//                                            actionString = "Dismiss",
+//                                            actionColor = Color(0xFFF03535),
+//                                            displayTimeSeconds = 4
+//                                        ) {
+//                                            customInfoBarMessage = null
+//                                        }
                                     }
                                 }
                             ) {
                                 Text("Show Message")
                             }
                         }
-                        InfoBar(
-                            modifier = Modifier.align(Alignment.BottomCenter),
-                            offeredMessage = customInfoBarMessage,
-                            content = contentComposable,
-                            slideEffect = InfoBarSlideEffect.FROM_BOTTOM
-                        ) {
-                            customInfoBarMessage = null
-                        }
 //                        InfoBar(
 //                            modifier = Modifier.align(Alignment.BottomCenter),
-//                            offeredMessage = infoBarMessage,
-//                            shape = CutCornerShape(bottomEnd = 8.dp),
+//                            offeredMessage = customInfoBarMessage,
+//                            content = contentComposable,
 //                            slideEffect = InfoBarSlideEffect.FROM_BOTTOM
 //                        ) {
-//                            infoBarMessage = null
+//                            customInfoBarMessage = null
 //                        }
+                        InfoBar(
+                            modifier = Modifier.align(Alignment.BottomCenter),
+                            offeredMessage = infoBarMessage,
+                            slideEffect = InfoBarSlideEffect.FROM_BOTTOM
+                        ) {
+                            infoBarMessage = null
+                        }
+//                        Snackbar(
+//                            snackbarData = object : SnackbarData {
+//                                override val actionLabel: String?
+//                                    get() = "Button"
+//                                override val duration: SnackbarDuration
+//                                    get() = SnackbarDuration.Indefinite
+//                                override val message: String
+//                                    get() = "This is a test message"
+//
+//                                override fun dismiss() {
+//
+//                                }
+//
+//                                override fun performAction() {
+//
+//                                }
+//
+//                            }
+//                        )
                     }
                 }
             }
@@ -120,7 +138,11 @@ class MainActivity : ComponentActivity() {
 }
 
 private val contentComposable: @Composable (CustomInfoBarMessage) -> Unit = { message ->
-    Box(Modifier.fillMaxWidth().height(100.dp)) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+    ) {
         var imageSize by remember { mutableStateOf(IntSize.Zero) }
         val gradient = Brush.linearGradient(
             start = Offset.Zero,

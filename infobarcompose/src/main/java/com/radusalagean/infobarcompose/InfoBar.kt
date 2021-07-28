@@ -4,6 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -12,6 +13,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -125,18 +127,18 @@ fun InfoBar(
     elevation: Dp = 6.dp,
     shape: Shape = MaterialTheme.shapes.small,
     backgroundColor: Color? = null,
-    textPadding: InfoBarPadding = InfoBarPadding.default,
     textColor: Color? = null,
-    textFontSize: TextUnit = 16.sp,
+    textFontSize: TextUnit = TextUnit.Unspecified,
     textFontStyle: FontStyle? = null,
     textFontWeight: FontWeight? = null,
     textFontFamily: FontFamily? = null,
     textLetterSpacing: TextUnit = TextUnit.Unspecified,
     textDecoration: TextDecoration? = null,
-    textAlign: TextAlign? = TextAlign.Center,
+    textAlign: TextAlign? = null,
     textLineHeight: TextUnit = TextUnit.Unspecified,
     textMaxLines: Int = 5,
     textStyle: TextStyle = LocalTextStyle.current,
+    actionColor: Color? = null,
     fadeEffect: Boolean = true,
     slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.FROM_TOP,
     enterTransitionMillis: Int = 150,
@@ -144,27 +146,46 @@ fun InfoBar(
     onMessageTimeout: () -> Unit
 ) {
     val contentComposable: @Composable (InfoBarMessage) -> Unit = { message ->
-        Text(
+        Row(
             modifier = Modifier.padding(
-                start = textPadding.start,
-                top = textPadding.top,
-                end = textPadding.end,
-                bottom = textPadding.bottom
-            ),
-            text = message.textString,
-            color = message.textColor ?: textColor ?: MaterialTheme.colors.surface,
-            fontSize = textFontSize,
-            fontStyle = textFontStyle,
-            fontWeight = textFontWeight,
-            fontFamily = textFontFamily,
-            letterSpacing = textLetterSpacing,
-            textDecoration = textDecoration,
-            textAlign = textAlign,
-            lineHeight = textLineHeight,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = textMaxLines,
-            style = textStyle
-        )
+                start = 16.dp,
+                top = 6.dp,
+                end = if (message.action != null) 8.dp else 16.dp,
+                bottom = 6.dp
+            )
+        ) {
+            Text(
+                modifier = Modifier.weight(1f).align(Alignment.CenterVertically),
+                text = message.text,
+                color = message.textColor ?: textColor ?: MaterialTheme.colors.surface,
+                fontSize = textFontSize,
+                fontStyle = textFontStyle,
+                fontWeight = textFontWeight,
+                fontFamily = textFontFamily,
+                letterSpacing = textLetterSpacing,
+                textDecoration = textDecoration,
+                textAlign = textAlign ?: if (message.action != null)
+                    TextAlign.Start else TextAlign.Center,
+                lineHeight = textLineHeight,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = textMaxLines,
+                style = textStyle
+            )
+            if (!message.action.isNullOrBlank()) {
+                TextButton(
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 8.dp),
+                    onClick = message.onAction ?: {},
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = message.actionColor ?: actionColor
+                        ?: SnackbarDefaults.primaryActionColor
+                    )
+                ) {
+                    Text(message.action)
+                }
+            }
+        }
     }
     InfoBar(
         modifier = modifier,
