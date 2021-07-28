@@ -17,8 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -68,26 +70,26 @@ class MainActivity : ComponentActivity() {
 //                                        infoBarMessage = InfoBarMessage(
 //                                            textString = textFieldState
 //                                        )
-                                        customInfoBarMessage = CustomInfoBarMessage(
-                                            bannerImage = R.drawable.banner_1,
-                                            textString = textFieldState,
-                                            textColor = Color(0XFF084C61),
-                                            actionString = "Dismiss",
-                                            actionColor = Color(0xFF0FA7D6),
-                                            displayTimeSeconds = 4
-                                        ) {
-                                            customInfoBarMessage = null
-                                        }
 //                                        customInfoBarMessage = CustomInfoBarMessage(
-//                                            bannerImage = R.drawable.banner_2,
+//                                            bannerImage = R.drawable.banner_1,
 //                                            textString = textFieldState,
-//                                            textColor = Color(0xFFA80D0D),
+//                                            textColor = Color(0XFF084C61),
 //                                            actionString = "Dismiss",
-//                                            actionColor = Color(0xFFF03535),
+//                                            actionColor = Color(0xFF0FA7D6),
 //                                            displayTimeSeconds = 4
 //                                        ) {
 //                                            customInfoBarMessage = null
 //                                        }
+                                        customInfoBarMessage = CustomInfoBarMessage(
+                                            bannerImage = R.drawable.banner_2,
+                                            textString = textFieldState,
+                                            textColor = Color(0xFFA80D0D),
+                                            actionString = "Dismiss",
+                                            actionColor = Color(0xFFF03535),
+                                            displayTimeSeconds = 4
+                                        ) {
+                                            customInfoBarMessage = null
+                                        }
                                     }
                                 }
                             ) {
@@ -118,7 +120,7 @@ class MainActivity : ComponentActivity() {
 }
 
 private val contentComposable: @Composable (CustomInfoBarMessage) -> Unit = { message ->
-    Box {
+    Box(Modifier.fillMaxWidth().height(100.dp)) {
         var imageSize by remember { mutableStateOf(IntSize.Zero) }
         val gradient = Brush.linearGradient(
             start = Offset.Zero,
@@ -130,12 +132,14 @@ private val contentComposable: @Composable (CustomInfoBarMessage) -> Unit = { me
                 1f to Color.White.copy(alpha = 0.3f)
             )
         )
-        Image( // TODO fix landscape scale
+        Image(
             modifier = Modifier
-                .fillMaxWidth()
+                .matchParentSize()
+                .align(Alignment.Center)
                 .onGloballyPositioned { imageSize = it.size },
             painter = painterResource(message.bannerImage),
-            contentDescription = "Banner"
+            contentDescription = "Banner",
+            contentScale = ContentScale.Crop
         )
         Row(
             modifier = Modifier
@@ -152,10 +156,12 @@ private val contentComposable: @Composable (CustomInfoBarMessage) -> Unit = { me
                 modifier = Modifier
                     .align(Alignment.Top)
                     .weight(1f)
-                    .padding(end = 8.dp),
+                    .padding(horizontal = 8.dp, vertical = 12.dp),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.h6
+                fontSize = 22.sp,
+                fontFamily = FontFamily.SansSerif,
+                lineHeight = 28.sp
             )
             TextButton(
                 modifier = Modifier.align(Alignment.Bottom),
@@ -167,7 +173,7 @@ private val contentComposable: @Composable (CustomInfoBarMessage) -> Unit = { me
                 ),
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = message.actionColor ?: Color.Gray,
-                    backgroundColor = message.actionBackgroundColor ?: Color.White
+                    backgroundColor = message.actionBackgroundColor ?: Color.White.copy(alpha = 0.7f)
                 )
             ) {
                 Text(
