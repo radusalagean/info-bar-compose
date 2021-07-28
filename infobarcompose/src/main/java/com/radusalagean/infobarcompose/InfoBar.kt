@@ -17,6 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.AccessibilityManager
+import androidx.compose.ui.platform.LocalAccessibilityManager
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -50,11 +55,13 @@ fun <T : BaseInfoBarMessage> InfoBar(
 ) {
     val displayedMessage: MutableState<T?> = remember { mutableStateOf(null) }
     val isShown: MutableState<Boolean> = remember { mutableStateOf(false) }
+    val accessibilityManager = LocalAccessibilityManager.current
     LaunchedEffect(offeredMessage) {
         handleOfferedMessage(
             offeredMessage = offeredMessage,
             displayedMessage = displayedMessage,
             isShown = isShown,
+            accessibilityManager = accessibilityManager,
             onMessageTimeout = onMessageTimeout
         )
     }
@@ -101,7 +108,10 @@ fun <T : BaseInfoBarMessage> InfoBar(
         )
     }
     AnimatedVisibility(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
+            .semantics {
+                liveRegion = LiveRegionMode.Polite
+            },
         visible = isShown.value,
         enter = enterTransition,
         exit = exitTransition
@@ -140,7 +150,7 @@ fun InfoBar(
     textStyle: TextStyle = LocalTextStyle.current,
     actionColor: Color? = null,
     fadeEffect: Boolean = true,
-    slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.FROM_TOP,
+    slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.FROM_BOTTOM,
     enterTransitionMillis: Int = 150,
     exitTransitionMillis: Int = 250,
     onMessageTimeout: () -> Unit
@@ -155,7 +165,9 @@ fun InfoBar(
             )
         ) {
             Text(
-                modifier = Modifier.weight(1f).align(Alignment.CenterVertically),
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically),
                 text = message.text,
                 color = message.textColor ?: textColor ?: MaterialTheme.colors.surface,
                 fontSize = textFontSize,
@@ -206,6 +218,7 @@ private suspend fun <T : BaseInfoBarMessage> handleOfferedMessage(
     offeredMessage: T?,
     displayedMessage: MutableState<T?>,
     isShown: MutableState<Boolean>,
+    accessibilityManager: AccessibilityManager?,
     onMessageTimeout: () -> Unit
 ) {
     isShown.value = false
@@ -213,9 +226,8 @@ private suspend fun <T : BaseInfoBarMessage> handleOfferedMessage(
     displayedMessage.value = offeredMessage
     if (offeredMessage == null) return
     isShown.value = true
-    val delayTime = offeredMessage.displayTimeSeconds
-        .takeUnless { it == null || it <= 0 }?.toLong() ?: Long.MAX_VALUE
-    delay(TimeUnit.SECONDS.toMillis(delayTime))
+    val delayTime = offeredMessage.getInfoBarTimeout(accessibilityManager)
+    delay(delayTime)
     isShown.value = false
     onMessageTimeout()
 }

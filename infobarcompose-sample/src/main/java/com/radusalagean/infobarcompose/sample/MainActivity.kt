@@ -68,8 +68,11 @@ class MainActivity : ComponentActivity() {
                                 onClick = {
                                     if (textFieldState.isNotBlank()) {
                                         infoBarMessage = InfoBarMessage(
-                                            text = textFieldState
-                                        )
+                                            text = textFieldState,
+                                            action = "Dismiss"
+                                        ) {
+                                            infoBarMessage = null
+                                        }
 //                                        customInfoBarMessage = CustomInfoBarMessage(
 //                                            bannerImage = R.drawable.banner_1,
 //                                            textString = textFieldState,
@@ -214,6 +217,7 @@ class CustomInfoBarMessage(
     val actionString: String,
     val actionColor: Color? = null,
     val actionBackgroundColor: Color? = null,
+    override val containsControls: Boolean = true,
     override val displayTimeSeconds: Int? = 4,
     val onAction: () -> Unit
 ) : BaseInfoBarMessage()
