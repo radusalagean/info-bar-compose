@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,9 +27,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
         color = MaterialTheme.colors.background
     ) {
         Box(
-            Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+            Modifier.fillMaxSize()
         ) {
             val scrollState = rememberScrollState()
             Column(
@@ -36,37 +35,49 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                     .wrapContentHeight()
                     .align(Alignment.Center)
                     .verticalScroll(scrollState)
+                    .padding(vertical = 200.dp, horizontal = 16.dp)
             ) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = viewModel.textField,
                     onValueChange = viewModel::onTextValueChange,
-                    label = { Text(stringResource(R.string.message_hint)) }
+                    label = { Text(stringResource(R.string.message_hint)) },
+                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
                 )
+                Row(Modifier.padding(top = 16.dp)) {
+                    RadioGroup(
+                        modifier = Modifier
+                            .weight(1f),
+                        config = viewModel.messageTimeoutRadioGroup
+                    )
+                    RadioGroup(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 8.dp),
+                        config = viewModel.messageTypeRadioGroup
+                    )
+                }
+                Row(Modifier.padding(top = 16.dp)) {
+                    RadioGroup(
+                        modifier = Modifier
+                            .weight(1f),
+                        config = viewModel.messagePositionRadioGroup
+                    )
+                    CheckGroup(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 8.dp),
+                        config = viewModel.messageAnimationCheckGroup
+                    )
+                }
                 RadioGroup(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 16.dp),
-                    config = viewModel.messagePositionRadioGroup,
-                    orientation = Orientation.HORIZONTAL
-                )
-                RadioGroup(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 16.dp),
-                    config = viewModel.messageTypeRadioGroup,
-                    orientation = Orientation.HORIZONTAL
-                )
-                CheckGroup(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 16.dp),
-                    config = viewModel.messageAnimationCheckGroup,
+                    modifier = Modifier.padding(top = 16.dp),
+                    config = viewModel.messageActionRadioGroup,
                     orientation = Orientation.HORIZONTAL
                 )
                 Button(
                     modifier = Modifier
-                        .padding(top = 16.dp)
+                        .padding(top = 24.dp)
                         .align(Alignment.CenterHorizontally),
                     onClick = viewModel::onShowMessageClick
                 ) {
@@ -74,14 +85,16 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 }
             }
             InfoBar( // Generic InfoBar
-                modifier = Modifier.align(viewModel.infoBarAlignment),
+                modifier = Modifier.padding(16.dp)
+                    .align(viewModel.infoBarAlignment),
                 offeredMessage = viewModel.infoBarMessage,
                 fadeEffect = viewModel.infoBarFadeEffect,
                 slideEffect = viewModel.infoBarSlideEffect,
                 onMessageTimeout = viewModel::onInfoBarMessageTimeout
             )
             InfoBar( // Custom InfoBar
-                modifier = Modifier.align(viewModel.infoBarAlignment),
+                modifier = Modifier.padding(16.dp)
+                    .align(viewModel.infoBarAlignment),
                 offeredMessage = viewModel.customInfoBarMessage,
                 content = customInfoBarContent,
                 fadeEffect = viewModel.infoBarFadeEffect,

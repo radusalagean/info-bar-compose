@@ -5,16 +5,25 @@
     <string name="show_message_button">Show Message</string>
     <string name="dismiss_button">Dismiss</string>
 
-    <string name="radio_group_message_position">Message position</string>
+    <string name="radio_group_message_position">Position</string>
     <string name="radio_group_message_position_top">Top</string>
     <string name="radio_group_message_position_bottom">Bottom</string>
 
-    <string name="radio_group_message_type">Message type</string>
+    <string name="radio_group_message_type">Type</string>
     <string name="radio_group_message_type_generic">Generic</string>
     <string name="radio_group_message_type_custom_1">Custom 1</string>
     <string name="radio_group_message_type_custom_2">Custom 2</string>
 
-    <string name="check_group_message_animation">Message animation</string>
+    <string name="check_group_message_animation">Animation</string>
     <string name="check_group_message_animation_fade">Fade</string>
     <string name="check_group_message_animation_slide">Slide</string>
+
+    <string name="radio_group_message_timeout">Timeout</string>
+    <string name="radio_group_message_timeout_4_seconds">4 seconds</string>
+    <string name="radio_group_message_timeout_10_seconds">10 seconds</string>
+    <string name="radio_group_message_timeout_indefinite">Indefinite</string>
+
+    <string name="radio_group_message_action">Action</string>
+    <string name="radio_group_message_action_no_action">No Action</string>
+    <string name="radio_group_message_action_dismiss">Dismiss</string>
 </resources>

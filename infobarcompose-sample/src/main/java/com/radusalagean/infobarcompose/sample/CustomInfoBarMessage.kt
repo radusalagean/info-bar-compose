@@ -9,7 +9,7 @@ class CustomInfoBarMessage(
     @DrawableRes val bannerImage: Int,
     val textString: String,
     val textColor: Color? = null,
-    @StringRes val actionStringResId: Int,
+    @StringRes val actionStringResId: Int?,
     val actionColor: Color? = null,
     val actionBackgroundColor: Color? = null,
     override val containsControls: Boolean = true,

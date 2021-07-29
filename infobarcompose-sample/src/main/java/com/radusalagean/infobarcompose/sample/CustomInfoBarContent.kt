@@ -72,24 +72,26 @@ val customInfoBarContent: @Composable (CustomInfoBarMessage) -> Unit = { message
                 fontFamily = FontFamily.SansSerif,
                 lineHeight = 28.sp
             )
-            TextButton(
-                modifier = Modifier.align(Alignment.Bottom),
-                onClick = message.onAction,
-                shape = RoundedCornerShape(4.dp),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = message.actionColor ?: Color.Gray
-                ),
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = message.actionColor ?: Color.Gray,
-                    backgroundColor = message.actionBackgroundColor
-                        ?: Color.White.copy(alpha = 0.7f)
-                )
-            ) {
-                Text(
-                    text = stringResource(message.actionStringResId),
-                    fontSize = 12.sp
-                )
+            if (message.actionStringResId != null) {
+                TextButton(
+                    modifier = Modifier.align(Alignment.Bottom),
+                    onClick = message.onAction,
+                    shape = RoundedCornerShape(4.dp),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = message.actionColor ?: Color.Gray
+                    ),
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = message.actionColor ?: Color.Gray,
+                        backgroundColor = message.actionBackgroundColor
+                            ?: Color.White.copy(alpha = 0.7f)
+                    )
+                ) {
+                    Text(
+                        text = stringResource(message.actionStringResId),
+                        fontSize = 12.sp
+                    )
+                }
             }
         }
     }

@@ -31,11 +31,11 @@ fun <T : GroupConfig> BaseGroup(
 
     @Composable
     fun layOutOptions(
-        modifier: Modifier = Modifier,
+        itemModifier: Modifier = Modifier,
     ) {
         config.options.forEachIndexed { index, currentStringResId ->
             Row(
-                modifier = modifier
+                modifier = itemModifier
                     .padding(vertical = 4.dp)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
