@@ -26,4 +26,8 @@
     <string name="radio_group_message_action">Action</string>
     <string name="radio_group_message_action_no_action">No Action</string>
     <string name="radio_group_message_action_dismiss">Dismiss</string>
+
+    <string name="about_version">Version: %s | InfoBar Compose Library Demo</string>
+    <string name="about_info">Find library source code and usage instructions on Github</string>
+    <string name="about_github_link">https://github.com/radusalagean/info-bar-compose</string>
 </resources>

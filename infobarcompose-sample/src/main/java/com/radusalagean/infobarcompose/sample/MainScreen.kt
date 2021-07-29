@@ -85,9 +85,11 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 ) {
                     Text(stringResource(R.string.show_message_button))
                 }
+                AboutSection(Modifier.padding(top = 24.dp))
             }
             InfoBar( // Generic InfoBar
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
                     .align(viewModel.infoBarAlignment),
                 offeredMessage = viewModel.infoBarMessage,
                 fadeEffect = viewModel.infoBarFadeEffect,
@@ -95,7 +97,8 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 onMessageTimeout = viewModel::onInfoBarMessageTimeout
             )
             InfoBar( // Custom InfoBar
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
                     .align(viewModel.infoBarAlignment),
                 offeredMessage = viewModel.customInfoBarMessage,
                 content = customInfoBarContent,
@@ -105,13 +108,4 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
             )
         }
     }
-}
-
-@ExperimentalAnimationApi
-@Preview(
-    showBackground = true
-)
-@Composable
-fun PreviewMainScreen() {
-    MainScreen()
 }
