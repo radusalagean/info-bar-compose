@@ -1,5 +1,6 @@
 package com.radusalagean.infobarcompose.sample
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.radusalagean.infobarcompose.InfoBarMessage
 import com.radusalagean.infobarcompose.InfoBarSlideEffect
+import com.radusalagean.infobarcompose.sample.ui.components.GroupConfig
 
 class MainViewModel : ViewModel() {
 
@@ -16,13 +18,44 @@ class MainViewModel : ViewModel() {
         private set
     var customInfoBarMessage: CustomInfoBarMessage? by mutableStateOf(null)
         private set
-    var infoBarAlignment: Alignment by mutableStateOf(Alignment.BottomCenter)
-    val infoBarSlideEffect: InfoBarSlideEffect by derivedStateOf {
-        when(infoBarAlignment) {
-            Alignment.BottomCenter -> InfoBarSlideEffect.FROM_BOTTOM
-            else -> InfoBarSlideEffect.FROM_TOP
+    val infoBarAlignment: Alignment by derivedStateOf {
+        when(messagePositionRadioGroup.selectedIndex) {
+            MessagePositionRadioGroupOptions.TOP.ordinal -> Alignment.TopCenter
+            else -> Alignment.BottomCenter
         }
     }
+    val infoBarFadeEffect: Boolean by derivedStateOf {
+        messageAnimationCheckGroup.selectedIndices[
+                MessageAnimationCheckGroupOptions.FADE.ordinal
+        ]
+    }
+    val infoBarSlideEffect: InfoBarSlideEffect by derivedStateOf {
+        when {
+            !messageAnimationCheckGroup.selectedIndices[
+                    MessageAnimationCheckGroupOptions.SLIDE.ordinal
+            ] -> InfoBarSlideEffect.NONE
+            infoBarAlignment == Alignment.TopCenter -> InfoBarSlideEffect.FROM_TOP
+            infoBarAlignment == Alignment.BottomCenter -> InfoBarSlideEffect.FROM_BOTTOM
+            else -> InfoBarSlideEffect.NONE
+        }
+    }
+
+    // Groups
+    val messagePositionRadioGroup = GroupConfig.RadioGroupConfig(
+        groupTitle = R.string.radio_group_message_position,
+        options = MessagePositionRadioGroupOptions.values().map { it.stringResId },
+        initialIndex = MessagePositionRadioGroupOptions.BOTTOM.ordinal
+    )
+    val messageTypeRadioGroup = GroupConfig.RadioGroupConfig(
+        groupTitle = R.string.radio_group_message_type,
+        options = MessageTypeRadioGroupOptions.values().map { it.stringResId },
+        initialIndex = MessageTypeRadioGroupOptions.GENERIC.ordinal
+    )
+    val messageAnimationCheckGroup = GroupConfig.CheckGroupConfig(
+        groupTitle = R.string.check_group_message_animation,
+        options = MessageAnimationCheckGroupOptions.values().map { it.stringResId },
+        initialIndices = MessageAnimationCheckGroupOptions.values().map { it.initialValue }
+    )
 
     var textField: String by mutableStateOf("Example message")
         private set
@@ -62,8 +95,14 @@ class MainViewModel : ViewModel() {
 
     fun onShowMessageClick() {
         if (textField.isNotBlank()) {
-            infoBarMessage = generateMessage()
-//            customInfoBarMessage = generateCustomMessage2()
+            when(messageTypeRadioGroup.selectedIndex) {
+                MessageTypeRadioGroupOptions.CUSTOM_1.ordinal ->
+                    customInfoBarMessage = generateCustomMessage1()
+                MessageTypeRadioGroupOptions.CUSTOM_2.ordinal ->
+                    customInfoBarMessage = generateCustomMessage2()
+                MessageTypeRadioGroupOptions.GENERIC.ordinal ->
+                    infoBarMessage = generateMessage()
+            }
         }
     }
 
@@ -73,5 +112,26 @@ class MainViewModel : ViewModel() {
 
     fun onCustomInfoBarMessageTimeout() {
         customInfoBarMessage = null
+    }
+
+    companion object RadioGroups {
+        enum class MessagePositionRadioGroupOptions(@StringRes val stringResId: Int) {
+            TOP(R.string.radio_group_message_position_top),
+            BOTTOM(R.string.radio_group_message_position_bottom)
+        }
+
+        enum class MessageTypeRadioGroupOptions(@StringRes val stringResId: Int) {
+            GENERIC(R.string.radio_group_message_type_generic),
+            CUSTOM_1(R.string.radio_group_message_type_custom_1),
+            CUSTOM_2(R.string.radio_group_message_type_custom_2)
+        }
+
+        enum class MessageAnimationCheckGroupOptions(
+            @StringRes val stringResId: Int,
+            val initialValue: Boolean
+        ) {
+            FADE(R.string.check_group_message_animation_fade, true),
+            SLIDE(R.string.check_group_message_animation_slide, true)
+        }
     }
 }

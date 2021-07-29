@@ -4,4 +4,17 @@
     <string name="message_hint">Type a message…</string>
     <string name="show_message_button">Show Message</string>
     <string name="dismiss_button">Dismiss</string>
+
+    <string name="radio_group_message_position">Message position</string>
+    <string name="radio_group_message_position_top">Top</string>
+    <string name="radio_group_message_position_bottom">Bottom</string>
+
+    <string name="radio_group_message_type">Message type</string>
+    <string name="radio_group_message_type_generic">Generic</string>
+    <string name="radio_group_message_type_custom_1">Custom 1</string>
+    <string name="radio_group_message_type_custom_2">Custom 2</string>
+
+    <string name="check_group_message_animation">Message animation</string>
+    <string name="check_group_message_animation_fade">Fade</string>
+    <string name="check_group_message_animation_slide">Slide</string>
 </resources>
