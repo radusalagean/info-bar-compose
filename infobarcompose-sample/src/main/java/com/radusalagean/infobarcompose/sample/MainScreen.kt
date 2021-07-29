@@ -47,26 +47,28 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 Row(Modifier.padding(top = 16.dp)) {
                     RadioGroup(
                         modifier = Modifier
-                            .weight(1f),
+                            .weight(1f)
+                            .padding(end = 4.dp),
                         config = viewModel.messageTimeoutRadioGroup
                     )
                     RadioGroup(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(start = 8.dp),
+                            .padding(start = 4.dp),
                         config = viewModel.messageTypeRadioGroup
                     )
                 }
                 Row(Modifier.padding(top = 16.dp)) {
                     RadioGroup(
                         modifier = Modifier
-                            .weight(1f),
+                            .weight(1f)
+                            .padding(end = 4.dp),
                         config = viewModel.messagePositionRadioGroup
                     )
                     CheckGroup(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(start = 8.dp),
+                            .padding(start = 4.dp),
                         config = viewModel.messageAnimationCheckGroup
                     )
                 }
