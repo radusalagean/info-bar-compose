@@ -68,48 +68,59 @@ fun <T : BaseInfoBarMessage> InfoBar(
         handleOfferedMessage()
     }
 
-    var enterTransition = EnterTransition.None
-    var exitTransition = ExitTransition.None
-    if (slideEffect != InfoBarSlideEffect.NONE) {
-        enterTransition += slideInVertically(
-            initialOffsetY = { fullHeight ->
-                when (slideEffect) {
-                    InfoBarSlideEffect.FROM_TOP -> -fullHeight
-                    else -> fullHeight
-                }
-            },
-            animationSpec = tween(
-                durationMillis = enterTransitionMillis,
-                easing = LinearOutSlowInEasing
+    val enterTransition: EnterTransition = remember(fadeEffect, slideEffect) {
+        var result: EnterTransition = EnterTransition.None
+        if (slideEffect != InfoBarSlideEffect.NONE) {
+            result += slideInVertically(
+                initialOffsetY = { fullHeight ->
+                    when (slideEffect) {
+                        InfoBarSlideEffect.FROM_TOP -> -fullHeight
+                        else -> fullHeight
+                    }
+                },
+                animationSpec = tween(
+                    durationMillis = enterTransitionMillis,
+                    easing = LinearOutSlowInEasing
+                )
             )
-        )
-        exitTransition += slideOutVertically(
-            targetOffsetY = { fullHeight ->
-                when (slideEffect) {
-                    InfoBarSlideEffect.FROM_TOP -> -fullHeight
-                    else -> fullHeight
-                }
-            },
-            animationSpec = tween(
-                durationMillis = exitTransitionMillis,
-                easing = FastOutLinearInEasing
+        }
+        if (fadeEffect) {
+            result += fadeIn(
+                animationSpec = tween(
+                    durationMillis = enterTransitionMillis,
+                    easing = LinearOutSlowInEasing
+                )
             )
-        )
+        }
+        result
     }
-    if (fadeEffect) {
-        enterTransition += fadeIn(
-            animationSpec = tween(
-                durationMillis = enterTransitionMillis,
-                easing = LinearOutSlowInEasing
+    val exitTransition: ExitTransition = remember(fadeEffect, slideEffect) {
+        var result: ExitTransition = ExitTransition.None
+        if (slideEffect != InfoBarSlideEffect.NONE) {
+            result += slideOutVertically(
+                targetOffsetY = { fullHeight ->
+                    when (slideEffect) {
+                        InfoBarSlideEffect.FROM_TOP -> -fullHeight
+                        else -> fullHeight
+                    }
+                },
+                animationSpec = tween(
+                    durationMillis = exitTransitionMillis,
+                    easing = FastOutLinearInEasing
+                )
             )
-        )
-        exitTransition += fadeOut(
-            animationSpec = tween(
-                durationMillis = exitTransitionMillis,
-                easing = LinearOutSlowInEasing
+        }
+        if (fadeEffect) {
+            result += fadeOut(
+                animationSpec = tween(
+                    durationMillis = exitTransitionMillis,
+                    easing = FastOutLinearInEasing
+                )
             )
-        )
+        }
+        result
     }
+
     AnimatedVisibility(
         modifier = modifier
             .fillMaxWidth()
