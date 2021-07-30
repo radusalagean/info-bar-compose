@@ -35,7 +35,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                     .wrapContentHeight()
                     .align(Alignment.Center)
                     .verticalScroll(scrollState)
-                    .padding(vertical = 200.dp, horizontal = 16.dp)
+                    .padding(vertical = 128.dp, horizontal = 16.dp)
             ) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -79,7 +79,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 )
                 Button(
                     modifier = Modifier
-                        .padding(top = 24.dp)
+                        .padding(top = 32.dp)
                         .align(Alignment.CenterHorizontally),
                     onClick = viewModel::onShowMessageClick
                 ) {

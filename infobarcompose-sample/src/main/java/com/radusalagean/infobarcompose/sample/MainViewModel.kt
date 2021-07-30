@@ -22,10 +22,9 @@ class MainViewModel : ViewModel() {
     var customInfoBarMessage: CustomInfoBarMessage? by mutableStateOf(null)
         private set
     val infoBarAlignment: Alignment by derivedStateOf {
-        when(messagePositionRadioGroup.selectedIndex) {
-            MessagePositionRadioGroupOptions.TOP.ordinal -> Alignment.TopCenter
-            else -> Alignment.BottomCenter
-        }
+        MessagePositionRadioGroupOptions.values()[
+                messagePositionRadioGroup.selectedIndex
+        ].targetAlignment
     }
     val infoBarFadeEffect: Boolean by derivedStateOf {
         messageAnimationCheckGroup.selectedIndices[
@@ -37,9 +36,9 @@ class MainViewModel : ViewModel() {
             !messageAnimationCheckGroup.selectedIndices[
                     MessageAnimationCheckGroupOptions.SLIDE.ordinal
             ] -> InfoBarSlideEffect.NONE
-            infoBarAlignment == Alignment.TopCenter -> InfoBarSlideEffect.FROM_TOP
-            infoBarAlignment == Alignment.BottomCenter -> InfoBarSlideEffect.FROM_BOTTOM
-            else -> InfoBarSlideEffect.NONE
+            else -> MessagePositionRadioGroupOptions.values()[
+                    messagePositionRadioGroup.selectedIndex
+            ].slideEffect
         }
     }
 
@@ -118,6 +117,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun onShowMessageClick() {
+        removeMessages()
         if (textField.isNotBlank()) {
             when(messageTypeRadioGroup.selectedIndex) {
                 MessageTypeRadioGroupOptions.CUSTOM_1.ordinal ->
@@ -130,6 +130,11 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    private fun removeMessages() {
+        infoBarMessage = null
+        customInfoBarMessage = null
+    }
+
     fun onInfoBarMessageTimeout() {
         infoBarMessage = null
     }
@@ -139,9 +144,13 @@ class MainViewModel : ViewModel() {
     }
 
     companion object RadioGroups {
-        enum class MessagePositionRadioGroupOptions(@StringRes val stringResId: Int) {
-            TOP(R.string.radio_group_message_position_top),
-            BOTTOM(R.string.radio_group_message_position_bottom)
+        enum class MessagePositionRadioGroupOptions(
+            @StringRes val stringResId: Int,
+            val targetAlignment: Alignment,
+            val slideEffect: InfoBarSlideEffect
+        ) {
+            TOP(R.string.radio_group_message_position_top, Alignment.TopCenter, InfoBarSlideEffect.FROM_TOP),
+            BOTTOM(R.string.radio_group_message_position_bottom, Alignment.BottomCenter, InfoBarSlideEffect.FROM_BOTTOM)
         }
 
         enum class MessageTypeRadioGroupOptions(@StringRes val stringResId: Int) {
