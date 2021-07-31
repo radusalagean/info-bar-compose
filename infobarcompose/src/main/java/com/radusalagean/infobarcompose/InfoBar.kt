@@ -14,9 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalAccessibilityManager
-import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.liveRegion
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -29,7 +27,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
-const val SHOW_DELAY = 200L
+internal const val INFO_BAR_CONTENT_DESCRIPTION = "InfoBar"
 
 @ExperimentalAnimationApi
 @Composable
@@ -52,7 +50,7 @@ fun <T : BaseInfoBarMessage> InfoBar(
 
     suspend fun handleOfferedMessage() {
         isShown.value = false
-        delay(SHOW_DELAY)
+        delay(InfoBarDelay.showDelay)
         displayedMessage.value = offeredMessage
         if (offeredMessage == null) return
         isShown.value = true
@@ -126,6 +124,7 @@ fun <T : BaseInfoBarMessage> InfoBar(
             .fillMaxWidth()
             .semantics {
                 liveRegion = LiveRegionMode.Polite
+                contentDescription = INFO_BAR_CONTENT_DESCRIPTION
             },
         visible = isShown.value,
         enter = enterTransition,

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">This is a string resource title with no args.</string>
+    <string name="action">Res Action</string>
+    <string name="title_with_args">I got %d shots, %d for you and %d for all of them</string>
+    <string name="action_with_args">Spice %d</string>
+</resources>

@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 
 class InfoBarMessage(
-    val text: String?,
+    val text: String? = null,
     @StringRes val textStringResId: Int? = null,
     val textStringResArgs: Array<Any>? = null,
     val textColor: Color? = null,

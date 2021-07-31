@@ -29,5 +29,5 @@
 
     <string name="about_version">Version: %s | InfoBar Compose Library Demo</string>
     <string name="about_info">Find library source code and usage instructions on Github</string>
-    <string name="about_github_link">https://github.com/radusalagean/info-bar-compose</string>
+    <string name="about_github_link" translatable="false">https://github.com/radusalagean/info-bar-compose</string>
 </resources>
