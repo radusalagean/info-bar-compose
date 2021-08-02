@@ -155,12 +155,12 @@ class InfoBarKtTest {
             textFontSize = 8.sp,
             textFontStyle = FontStyle.Italic,
             textFontWeight = FontWeight.Bold,
-            textFontFamily = FontFamily.Monospace,
-            textLetterSpacing = 6.sp,
+            textFontFamily = FontFamily.Serif,
+            textLetterSpacing = 2.sp,
             textDecoration = TextDecoration.Underline,
             textAlign = TextAlign.End,
             textLineHeight = 36.sp,
-            textMaxLines = 3,
+            textMaxLines = 4,
             textStyle = MaterialTheme.typography.h4,
             actionColor = Color(0xFFFAF7E2)
         ) {}
