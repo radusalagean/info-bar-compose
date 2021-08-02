@@ -3,6 +3,7 @@ buildscript {
     ext {
         compose_version = '1.0.0'
         kotlin_compiler_version = '1.5.10'
+        mockk_version = '1.12.0'
     }
     repositories {
         google()

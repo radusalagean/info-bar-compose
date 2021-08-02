@@ -73,7 +73,7 @@ private fun Bitmap.compare(other: Bitmap) {
         this.getRow(row1, column)
         other.getRow(row2, column)
         if (!row1.contentEquals(row2)) {
-            throw AssertionError("Sizes match but bitmap content has differences")
+            throw AssertionError("Sizes match but bitmap content has differences (column: $column)")
         }
     }
 }

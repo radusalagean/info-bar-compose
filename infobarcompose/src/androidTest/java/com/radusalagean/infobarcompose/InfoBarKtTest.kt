@@ -22,6 +22,7 @@ import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import com.radusalagean.infobarcompose.test.R
+import io.mockk.*
 
 /**
  * Gold screenshots are generated on a Pixel 2 Emulator - API 30
@@ -54,6 +55,30 @@ class InfoBarKtTest {
         rule.onNodeWithContentDescription(INFO_BAR_CONTENT_DESCRIPTION)
             .assertDoesNotExist()
     }
+
+    @Test
+    fun genericInfoBar_calledWithActionAndTappedAction_onActionCalled() {
+        val onAction: () -> Unit = mockk(relaxed = true)
+        setContent { GenericInfoBarWithStringTitleAndAction(onAction) }
+        verify(exactly = 0) { onAction() }
+        rule.onNodeWithText(EXAMPLE_ACTION).performClick()
+        verify(exactly = 1) { onAction() }
+    }
+
+    @Test
+    fun genericInfoBar_called_onMessageTimeoutCalledWhenTimedOut() {
+        val onMessageTimeout: () -> Unit = mockk(relaxed = true)
+        setContent { GenericInfoBarWithMockedOnMessageTimeout(onMessageTimeout = onMessageTimeout) }
+        rule.onNodeWithContentDescription(INFO_BAR_CONTENT_DESCRIPTION).assertExists()
+        verify(exactly = 0) { onMessageTimeout() }
+        rule.waitUntil(2000) {
+            rule.onAllNodesWithContentDescription(INFO_BAR_CONTENT_DESCRIPTION)
+                .fetchSemanticsNodes().isEmpty()
+        }
+        verify(exactly = 1) { onMessageTimeout() }
+    }
+
+    // Screenshot-based tests
 
     @Test
     fun genericInfoBar_calledWithStringTitle_matchesScreenshot() {
@@ -105,30 +130,6 @@ class InfoBarKtTest {
         checkAgainstScreenshot("generic_info_bar_with_fade_effect_only_75ms_in")
     }
 
-//    @Test
-//    fun genericInfoBar_calledWithSlideFromTopEffectOnly_matchesScreenshot() {
-//        rule.mainClock.autoAdvance = false
-//        setContent { GenericInfoBarWithSlideFromTopEffectOnly() }
-//        rule.mainClock.advanceTimeBy(75)
-//        checkAgainstScreenshot("generic_info_bar_with_slide_from_top_effect_only_75ms_in")
-//    }
-//
-//    @Test
-//    fun genericInfoBar_calledWithSlideFromBottomEffectOnly_matchesScreenshot() {
-//        rule.mainClock.autoAdvance = false
-//        setContent { GenericInfoBarWithSlideFromBottomEffectOnly() }
-//        rule.mainClock.advanceTimeBy(75)
-//        checkAgainstScreenshot("generic_info_bar_with_slide_from_bottom_effect_only_75ms_in")
-//    }
-//
-//    @Test
-//    fun genericInfoBar_calledWithDefaultTransitionEffects_matchesScreenshot() {
-//        rule.mainClock.autoAdvance = false
-//        setContent { GenericInfoBarWithStringTitle() }
-//        rule.mainClock.advanceTimeBy(75)
-//        checkAgainstScreenshot("generic_info_bar_with_default_transition_effects_75ms_in")
-//    }
-
     // Composables
 
     @Composable
@@ -137,10 +138,22 @@ class InfoBarKtTest {
     }
 
     @Composable
-    private fun GenericInfoBarWithStringTitleAndAction() {
+    private fun GenericInfoBarWithStringTitleAndAction(onAction: () -> Unit = {}) {
         InfoBar(
-            offeredMessage = InfoBarMessage(text = EXAMPLE_SHORT_STRING, action = EXAMPLE_ACTION)
+            offeredMessage = InfoBarMessage(
+                text = EXAMPLE_SHORT_STRING,
+                action = EXAMPLE_ACTION,
+                onAction = onAction
+            )
         ) {}
+    }
+
+    @Composable
+    private fun GenericInfoBarWithMockedOnMessageTimeout(onMessageTimeout: () -> Unit) {
+        InfoBar(
+            offeredMessage = InfoBarMessage(text = EXAMPLE_SHORT_STRING, displayTimeSeconds = 1),
+            onMessageTimeout = onMessageTimeout
+        )
     }
 
     @Composable
@@ -217,24 +230,6 @@ class InfoBarKtTest {
             slideEffect = InfoBarSlideEffect.NONE
         ) {}
     }
-
-//    @Composable
-//    fun GenericInfoBarWithSlideFromTopEffectOnly() {
-//        InfoBar(
-//            offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
-//            fadeEffect = false,
-//            slideEffect = InfoBarSlideEffect.FROM_TOP
-//        ) {}
-//    }
-//
-//    @Composable
-//    fun GenericInfoBarWithSlideFromBottomEffectOnly() {
-//        InfoBar(
-//            offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
-//            fadeEffect = false,
-//            slideEffect = InfoBarSlideEffect.FROM_BOTTOM
-//        ) {}
-//    }
 
     // Private
 
