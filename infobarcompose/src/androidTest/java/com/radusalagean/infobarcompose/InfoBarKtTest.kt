@@ -130,6 +130,12 @@ class InfoBarKtTest {
         checkAgainstScreenshot("generic_info_bar_with_fade_effect_only_75ms_in")
     }
 
+    @Test
+    fun customInfoBar_called_matchesScreenshot() {
+        setContent { CustomInfoBarComposable() }
+        checkAgainstScreenshot("custom_info_bar")
+    }
+
     // Composables
 
     @Composable
@@ -229,6 +235,16 @@ class InfoBarKtTest {
             fadeEffect = true,
             slideEffect = InfoBarSlideEffect.NONE
         ) {}
+    }
+    
+    @Composable
+    fun CustomInfoBarComposable() {
+        val message = CustomInfoBarMessage(
+            "Custom InfoBar",
+            gradientStartColor = Color.Black,
+            gradientEndColor = Color.Yellow
+        )
+        InfoBar(offeredMessage = message, content = customContent) {}
     }
 
     // Private
