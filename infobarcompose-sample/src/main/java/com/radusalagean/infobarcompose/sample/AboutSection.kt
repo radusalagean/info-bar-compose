@@ -18,7 +18,12 @@ private const val TAG = "URL"
 @Composable
 fun AboutSection(modifier: Modifier = Modifier) {
     val annotatedString = buildAnnotatedString {
-        pushStyle(style = SpanStyle(fontSize = 16.sp))
+        pushStyle(
+            style = SpanStyle(
+                color = MaterialTheme.colors.onSurface,
+                fontSize = 16.sp
+            )
+        )
         append(stringResource(R.string.about_version, BuildConfig.VERSION_NAME))
         append("\n\n")
         append(stringResource(R.string.about_info))
