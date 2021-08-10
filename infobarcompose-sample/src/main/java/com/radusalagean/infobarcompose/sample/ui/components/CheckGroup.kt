@@ -20,7 +20,6 @@ val checkBoxIndicator: @Composable RowScope.(GroupConfig.CheckGroupConfig, Int) 
         )
     }
 
-@ExperimentalAnimationApi
 @Composable
 fun CheckGroup(
     modifier: Modifier = Modifier,
@@ -35,7 +34,6 @@ fun CheckGroup(
     )
 }
 
-@ExperimentalAnimationApi
 @Preview
 @Composable
 fun CheckGroupPreview() {

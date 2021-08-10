@@ -1,12 +1,6 @@
 package com.radusalagean.infobarcompose
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,7 +23,6 @@ import kotlinx.coroutines.delay
 
 internal const val INFO_BAR_CONTENT_DESCRIPTION = "InfoBar"
 
-@ExperimentalAnimationApi
 @Composable
 fun <T : BaseInfoBarMessage> InfoBar(
     modifier: Modifier = Modifier,
@@ -39,10 +32,12 @@ fun <T : BaseInfoBarMessage> InfoBar(
     backgroundColor: Color? = null,
     content: @Composable (T) -> Unit,
     fadeEffect: Boolean = true,
-    slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.FROM_TOP,
+    scaleEffect: Boolean = true,
+    slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.NONE,
     enterTransitionMillis: Int = 150,
-    exitTransitionMillis: Int = 250,
-    onMessageTimeout: () -> Unit
+    exitTransitionMillis: Int = 75,
+    wrapInsideBox: Boolean = true,
+    onDismiss: () -> Unit
 ) {
     val displayedMessage: MutableState<T?> = remember { mutableStateOf(null) }
     val isShown: MutableState<Boolean> = remember { mutableStateOf(false) }
@@ -59,79 +54,35 @@ fun <T : BaseInfoBarMessage> InfoBar(
         delay(delayTime)
         isShown.value = false
         delay(exitTransitionMillis.toLong())
-        onMessageTimeout()
+        onDismiss()
     }
 
     LaunchedEffect(offeredMessage) {
         handleOfferedMessage()
     }
 
-    val enterTransition: EnterTransition = remember(fadeEffect, slideEffect) {
-        var result: EnterTransition = EnterTransition.None
-        if (slideEffect != InfoBarSlideEffect.NONE) {
-            result += slideInVertically(
-                initialOffsetY = { fullHeight ->
-                    when (slideEffect) {
-                        InfoBarSlideEffect.FROM_TOP -> -fullHeight
-                        else -> fullHeight
-                    }
-                },
-                animationSpec = tween(
-                    durationMillis = enterTransitionMillis,
-                    easing = LinearOutSlowInEasing
-                )
-            )
-        }
-        if (fadeEffect) {
-            result += fadeIn(
-                animationSpec = tween(
-                    durationMillis = enterTransitionMillis,
-                    easing = LinearOutSlowInEasing
-                )
-            )
-        }
-        result
-    }
-    val exitTransition: ExitTransition = remember(fadeEffect, slideEffect) {
-        var result: ExitTransition = ExitTransition.None
-        if (slideEffect != InfoBarSlideEffect.NONE) {
-            result += slideOutVertically(
-                targetOffsetY = { fullHeight ->
-                    when (slideEffect) {
-                        InfoBarSlideEffect.FROM_TOP -> -fullHeight
-                        else -> fullHeight
-                    }
-                },
-                animationSpec = tween(
-                    durationMillis = exitTransitionMillis,
-                    easing = FastOutLinearInEasing
-                )
-            )
-        }
-        if (fadeEffect) {
-            result += fadeOut(
-                animationSpec = tween(
-                    durationMillis = exitTransitionMillis,
-                    easing = FastOutLinearInEasing
-                )
-            )
-        }
-        result
-    }
-
-    AnimatedVisibility(
+    InfoBarAnimation(
         modifier = modifier
             .fillMaxWidth()
             .semantics {
                 liveRegion = LiveRegionMode.Polite
                 contentDescription = INFO_BAR_CONTENT_DESCRIPTION
+                dismiss {
+                    onDismiss()
+                    true
+                }
             },
         visible = isShown.value,
-        enter = enterTransition,
-        exit = exitTransition
+        fadeEffect = fadeEffect,
+        scaleEffect = scaleEffect,
+        slideEffect = slideEffect,
+        enterTransitionMillis = enterTransitionMillis,
+        exitTransitionMillis = exitTransitionMillis,
+        wrapInsideBox = wrapInsideBox
     ) {
         displayedMessage.value?.let { message ->
             Surface(
+                modifier = it,
                 elevation = elevation,
                 shape = shape,
                 color = message.backgroundColor ?: backgroundColor ?: SnackbarDefaults.backgroundColor,
@@ -143,7 +94,6 @@ fun <T : BaseInfoBarMessage> InfoBar(
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun InfoBar(
     modifier: Modifier = Modifier,
@@ -164,10 +114,12 @@ fun InfoBar(
     textStyle: TextStyle = LocalTextStyle.current,
     actionColor: Color? = null,
     fadeEffect: Boolean = true,
-    slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.FROM_BOTTOM,
+    scaleEffect: Boolean = true,
+    slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.NONE,
     enterTransitionMillis: Int = 150,
-    exitTransitionMillis: Int = 250,
-    onMessageTimeout: () -> Unit
+    exitTransitionMillis: Int = 75,
+    wrapInsideBox: Boolean = true,
+    onDismiss: () -> Unit
 ) {
     val contentComposable: @Composable (InfoBarMessage) -> Unit = { message ->
         Row(
@@ -222,9 +174,11 @@ fun InfoBar(
         backgroundColor = backgroundColor,
         content = contentComposable,
         fadeEffect = fadeEffect,
+        scaleEffect = scaleEffect,
         slideEffect = slideEffect,
         enterTransitionMillis = enterTransitionMillis,
         exitTransitionMillis = exitTransitionMillis,
-        onMessageTimeout = onMessageTimeout
+        wrapInsideBox = wrapInsideBox,
+        onDismiss = onDismiss
     )
 }

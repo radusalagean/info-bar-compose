@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.radusalagean.infobarcompose.InfoBar
@@ -18,7 +17,6 @@ import com.radusalagean.infobarcompose.sample.ui.components.CheckGroup
 import com.radusalagean.infobarcompose.sample.ui.components.Orientation
 import com.radusalagean.infobarcompose.sample.ui.components.RadioGroup
 
-@ExperimentalAnimationApi
 @Composable
 fun MainScreen(viewModel: MainViewModel = viewModel()) {
     Surface(
@@ -89,23 +87,32 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
             }
             InfoBar( // Generic InfoBar
                 modifier = Modifier
+                    .wrapContentSize()
                     .padding(16.dp)
                     .align(viewModel.infoBarAlignment),
                 offeredMessage = viewModel.infoBarMessage,
                 fadeEffect = viewModel.infoBarFadeEffect,
+                scaleEffect = viewModel.infoBarScaleEffect,
                 slideEffect = viewModel.infoBarSlideEffect,
-                onMessageTimeout = viewModel::onInfoBarMessageTimeout
+                onDismiss = viewModel::onInfoBarMessageTimeout,
+                enterTransitionMillis = 1000,
+                exitTransitionMillis = 1000,
+//                wrapInsideBox = false
             )
-            InfoBar( // Custom InfoBar
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(viewModel.infoBarAlignment),
-                offeredMessage = viewModel.customInfoBarMessage,
-                content = customInfoBarContent,
-                fadeEffect = viewModel.infoBarFadeEffect,
-                slideEffect = viewModel.infoBarSlideEffect,
-                onMessageTimeout = viewModel::onCustomInfoBarMessageTimeout
-            )
+//            InfoBar( // Custom InfoBar
+//                modifier = Modifier
+//                    .padding(16.dp)
+//                    .align(viewModel.infoBarAlignment),
+//                offeredMessage = viewModel.customInfoBarMessage,
+//                content = customInfoBarContent,
+//                fadeEffect = viewModel.infoBarFadeEffect,
+//                scaleEffect = viewModel.infoBarScaleEffect,
+//                slideEffect = viewModel.infoBarSlideEffect,
+//                onDismiss = viewModel::onCustomInfoBarMessageTimeout,
+//                enterTransitionMillis = 1000,
+//                exitTransitionMillis = 1000,
+////                wrapInsideBox = false
+//            )
         }
     }
 }

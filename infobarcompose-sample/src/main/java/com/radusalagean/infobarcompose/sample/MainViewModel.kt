@@ -31,6 +31,11 @@ class MainViewModel : ViewModel() {
                 MessageAnimationCheckGroupOptions.FADE.ordinal
         ]
     }
+    val infoBarScaleEffect: Boolean by derivedStateOf {
+        messageAnimationCheckGroup.selectedIndices[
+                MessageAnimationCheckGroupOptions.SCALE.ordinal
+        ]
+    }
     val infoBarSlideEffect: InfoBarSlideEffect by derivedStateOf {
         when {
             !messageAnimationCheckGroup.selectedIndices[
@@ -164,7 +169,8 @@ class MainViewModel : ViewModel() {
             val initialValue: Boolean
         ) {
             FADE(R.string.check_group_message_animation_fade, true),
-            SLIDE(R.string.check_group_message_animation_slide, true)
+            SCALE(R.string.check_group_message_animation_scale, true),
+            SLIDE(R.string.check_group_message_animation_slide, false)
         }
 
         enum class MessageTimeoutRadioGroupOptions(

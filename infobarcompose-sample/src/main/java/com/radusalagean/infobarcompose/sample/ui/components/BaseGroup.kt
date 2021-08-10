@@ -20,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 
-@ExperimentalAnimationApi
 @Composable
 fun <T : GroupConfig> BaseGroup(
     modifier: Modifier = Modifier,

@@ -22,7 +22,6 @@ val radioButtonIndicator: @Composable RowScope.(GroupConfig.RadioGroupConfig, In
         )
     }
 
-@ExperimentalAnimationApi
 @Composable
 fun RadioGroup(
     modifier: Modifier = Modifier,
@@ -37,7 +36,6 @@ fun RadioGroup(
     )
 }
 
-@ExperimentalAnimationApi
 @Preview
 @Composable
 fun RadioGroupPreview() {
