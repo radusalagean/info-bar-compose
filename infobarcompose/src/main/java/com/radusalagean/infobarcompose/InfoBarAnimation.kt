@@ -1,6 +1,5 @@
 package com.radusalagean.infobarcompose
 
-import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +11,8 @@ import androidx.compose.ui.layout.onSizeChanged
 @Composable
 internal fun InfoBarAnimation(
     modifier: Modifier = Modifier,
-    visible: Boolean,
+    messageShown: Boolean,
+    messageAvailable: Boolean,
     fadeEffect: Boolean,
     scaleEffect: Boolean,
     slideEffect: InfoBarSlideEffect,
@@ -21,29 +21,43 @@ internal fun InfoBarAnimation(
     wrapInsideBox: Boolean,
     content: @Composable (Modifier) -> Unit
 ) {
-    val transitionState = remember { MutableTransitionState(false) }
-    val transition = updateTransition(transitionState = transitionState, label = "InfoBarAnimation - transition")
-    LaunchedEffect(visible) {
-        transitionState.targetState = visible
-    }
+    val transition = updateTransition(
+        targetState = messageShown,
+        label = "InfoBarAnimation - transition"
+    )
     var contentHeightPx by remember { mutableStateOf(0) }
+    var refreshRestingTranslationY by remember { mutableStateOf(false) }
+    val restingTranslationY by remember(slideEffect, contentHeightPx) {
+        derivedStateOf {
+            when (slideEffect) {
+                InfoBarSlideEffect.NONE -> 0f
+                InfoBarSlideEffect.FROM_TOP -> -contentHeightPx.toFloat()
+                InfoBarSlideEffect.FROM_BOTTOM -> contentHeightPx.toFloat()
+            }
+        }
+    }
     val animatedAlpha by transition.animateFloat(
         label = "InfoBarAnimation - animatedAlpha",
         transitionSpec = {
             tween(
                 easing = LinearEasing,
-                durationMillis = if (visible) enterTransitionMillis else exitTransitionMillis
+                durationMillis = if (messageShown) enterTransitionMillis else exitTransitionMillis
             )
         }
     ) {
         if (it || !fadeEffect) 1f else 0f
+    }
+    val alpha by remember(refreshRestingTranslationY, contentHeightPx) {
+        derivedStateOf {
+            if (refreshRestingTranslationY || contentHeightPx == 0) 0f else animatedAlpha
+        }
     }
     val animatedScale by transition.animateFloat(
         label = "InfoBarAnimation - animatedScale",
         transitionSpec = {
             tween(
                 easing = FastOutSlowInEasing,
-                durationMillis = if (visible) enterTransitionMillis else exitTransitionMillis
+                durationMillis = if (messageShown) enterTransitionMillis else exitTransitionMillis
             )
         }
     ) {
@@ -52,28 +66,23 @@ internal fun InfoBarAnimation(
     val animatedTranslationY by transition.animateFloat(
         label = "InfoBarAnimation - animatedTranslationY",
         transitionSpec = {
-            tween(
+            if (refreshRestingTranslationY || contentHeightPx == 0) snap() else tween(
                 easing = FastOutSlowInEasing,
-                durationMillis = if (visible) enterTransitionMillis else exitTransitionMillis
+                durationMillis = if (messageShown) enterTransitionMillis else exitTransitionMillis
             )
         }
     ) {
-        if (!it) {
-            when (slideEffect) {
-                InfoBarSlideEffect.NONE -> 0f
-                InfoBarSlideEffect.FROM_TOP -> -contentHeightPx.toFloat()
-                InfoBarSlideEffect.FROM_BOTTOM -> contentHeightPx.toFloat()
-//                InfoBarSlideEffect.FROM_TOP -> -133f
-//                InfoBarSlideEffect.FROM_BOTTOM -> 133f
-            }
-        } else 0f
+        if (!it || refreshRestingTranslationY) restingTranslationY else 0f
     }
-    if (transitionState.currentState || transitionState.targetState) {
+    if (refreshRestingTranslationY && animatedTranslationY == restingTranslationY) {
+        refreshRestingTranslationY = false
+    }
+    if (messageAvailable) {
         val contentModifier = modifier
             .onSizeChanged {
                 if (contentHeightPx != it.height) {
+                    refreshRestingTranslationY = true
                     contentHeightPx = it.height
-                    Log.d("mytag", "content height assigned")
                 }
             }
             .graphicsLayer(
@@ -92,13 +101,13 @@ internal fun InfoBarAnimation(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .graphicsLayer(alpha = animatedAlpha)
+                    .graphicsLayer(alpha = alpha)
             ) {
                 content(contentModifier)
             }
         } else {
             content(
-                contentModifier.graphicsLayer(alpha = animatedAlpha)
+                contentModifier.graphicsLayer(alpha = alpha)
             )
         }
     }

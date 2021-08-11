@@ -72,7 +72,8 @@ fun <T : BaseInfoBarMessage> InfoBar(
                     true
                 }
             },
-        visible = isShown.value,
+        messageShown = isShown.value,
+        messageAvailable = displayedMessage.value != null,
         fadeEffect = fadeEffect,
         scaleEffect = scaleEffect,
         slideEffect = slideEffect,
