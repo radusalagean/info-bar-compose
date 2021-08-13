@@ -41,6 +41,13 @@ fun <T : BaseInfoBarMessage> InfoBar(
     wrapInsideBox: Boolean = true,
     onDismiss: () -> Unit
 ) {
+
+    fun isTransitionDelayNeeded() =
+        fadeEffect || scaleEffect || slideEffect != InfoBarSlideEffect.NONE
+
+    fun getEnterTransitionMillis() = if (isTransitionDelayNeeded()) enterTransitionMillis else 0
+    fun getExitTransitionMillis() = if (isTransitionDelayNeeded()) exitTransitionMillis else 0
+
     var displayedMessage: T? by remember { mutableStateOf(null) }
     var isShown: Boolean by remember { mutableStateOf(false) }
     val accessibilityManager = LocalAccessibilityManager.current
@@ -52,16 +59,16 @@ fun <T : BaseInfoBarMessage> InfoBar(
     suspend fun handleOfferedMessage() {
         if (transition.currentState && transition.targetState) {
             isShown = false
-            delay(exitTransitionMillis.toLong())
+            delay(getExitTransitionMillis().toLong())
         }
         displayedMessage = offeredMessage
         if (offeredMessage == null) return
         isShown = true
-        delay(enterTransitionMillis.toLong())
+        delay(getEnterTransitionMillis().toLong())
         val delayTime = offeredMessage.getInfoBarTimeout(accessibilityManager)
         delay(delayTime)
         isShown = false
-        delay(exitTransitionMillis.toLong())
+        delay(getExitTransitionMillis().toLong())
         onDismiss()
     }
 
@@ -81,8 +88,8 @@ fun <T : BaseInfoBarMessage> InfoBar(
         }
     }
     val durationMillis = when {
-        isShown -> enterTransitionMillis
-        else -> exitTransitionMillis
+        isShown -> getEnterTransitionMillis()
+        else -> getExitTransitionMillis()
     }
     val animatedAlpha by transition.animateFloat(
         label = "InfoBar - animatedAlpha",
