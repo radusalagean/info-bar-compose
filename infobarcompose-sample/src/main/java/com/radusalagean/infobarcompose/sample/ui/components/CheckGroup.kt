@@ -1,6 +1,5 @@
 package com.radusalagean.infobarcompose.sample.ui.components
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Checkbox

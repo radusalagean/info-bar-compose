@@ -1,6 +1,5 @@
 package com.radusalagean.infobarcompose.sample
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -42,7 +41,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                     label = { Text(stringResource(R.string.message_hint)) },
                     textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
                 )
-                Row(Modifier.padding(top = 16.dp)) {
+                Row(Modifier.padding(top = 8.dp)) {
                     RadioGroup(
                         modifier = Modifier
                             .weight(1f)
@@ -56,23 +55,24 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                         config = viewModel.messageTypeRadioGroup
                     )
                 }
-                Row(Modifier.padding(top = 16.dp)) {
+                Row(Modifier.padding(top = 8.dp)) {
                     RadioGroup(
                         modifier = Modifier
                             .weight(1f)
                             .padding(end = 4.dp),
                         config = viewModel.messagePositionRadioGroup
                     )
-                    CheckGroup(
+                    RadioGroup(
                         modifier = Modifier
                             .weight(1f)
                             .padding(start = 4.dp),
-                        config = viewModel.messageAnimationCheckGroup
+                        config = viewModel.messageActionRadioGroup
                     )
                 }
-                RadioGroup(
-                    modifier = Modifier.padding(top = 16.dp),
-                    config = viewModel.messageActionRadioGroup,
+                CheckGroup(
+                    modifier = Modifier
+                        .padding(top = 8.dp),
+                    config = viewModel.messageAnimationCheckGroup,
                     orientation = Orientation.HORIZONTAL
                 )
                 Button(
@@ -83,7 +83,11 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 ) {
                     Text(stringResource(R.string.show_message_button))
                 }
-                AboutSection(Modifier.padding(top = 24.dp))
+                AboutSection(
+                    Modifier
+                        .padding(top = 24.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
             }
             InfoBar( // Generic InfoBar
                 modifier = Modifier
@@ -94,25 +98,19 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 fadeEffect = viewModel.infoBarFadeEffect,
                 scaleEffect = viewModel.infoBarScaleEffect,
                 slideEffect = viewModel.infoBarSlideEffect,
-                onDismiss = viewModel::onInfoBarMessageTimeout,
-                enterTransitionMillis = 1000,
-                exitTransitionMillis = 1000,
-//                wrapInsideBox = false
+                onDismiss = viewModel::onInfoBarMessageTimeout
             )
-//            InfoBar( // Custom InfoBar
-//                modifier = Modifier
-//                    .padding(16.dp)
-//                    .align(viewModel.infoBarAlignment),
-//                offeredMessage = viewModel.customInfoBarMessage,
-//                content = customInfoBarContent,
-//                fadeEffect = viewModel.infoBarFadeEffect,
-//                scaleEffect = viewModel.infoBarScaleEffect,
-//                slideEffect = viewModel.infoBarSlideEffect,
-//                onDismiss = viewModel::onCustomInfoBarMessageTimeout,
-//                enterTransitionMillis = 1000,
-//                exitTransitionMillis = 1000,
-////                wrapInsideBox = false
-//            )
+            InfoBar( // Custom InfoBar
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(viewModel.infoBarAlignment),
+                offeredMessage = viewModel.customInfoBarMessage,
+                content = customInfoBarContent,
+                fadeEffect = viewModel.infoBarFadeEffect,
+                scaleEffect = viewModel.infoBarScaleEffect,
+                slideEffect = viewModel.infoBarSlideEffect,
+                onDismiss = viewModel::onCustomInfoBarMessageTimeout
+            )
         }
     }
 }
