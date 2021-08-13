@@ -1,5 +1,6 @@
 package com.radusalagean.infobarcompose
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -7,8 +8,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalAccessibilityManager
-import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -19,7 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 
 internal const val INFO_BAR_CONTENT_DESCRIPTION = "InfoBar"
 
@@ -39,20 +41,26 @@ fun <T : BaseInfoBarMessage> InfoBar(
     wrapInsideBox: Boolean = true,
     onDismiss: () -> Unit
 ) {
-    val displayedMessage: MutableState<T?> = remember { mutableStateOf(null) }
-    val isShown: MutableState<Boolean> = remember { mutableStateOf(false) }
+    var displayedMessage: T? by remember { mutableStateOf(null) }
+    var isShown: Boolean by remember { mutableStateOf(false) }
     val accessibilityManager = LocalAccessibilityManager.current
+    val transition = updateTransition(
+        targetState = isShown,
+        label = "InfoBar - transition"
+    )
 
     suspend fun handleOfferedMessage() {
-        isShown.value = false
-        delay(InfoBarDelay.showDelay)
-        displayedMessage.value = offeredMessage
+        if (transition.currentState && transition.targetState) {
+            isShown = false
+            delay(exitTransitionMillis.toLong())
+        }
+        displayedMessage = offeredMessage
         if (offeredMessage == null) return
-        isShown.value = true
+        isShown = true
         delay(enterTransitionMillis.toLong())
         val delayTime = offeredMessage.getInfoBarTimeout(accessibilityManager)
         delay(delayTime)
-        isShown.value = false
+        isShown = false
         delay(exitTransitionMillis.toLong())
         onDismiss()
     }
@@ -61,27 +69,64 @@ fun <T : BaseInfoBarMessage> InfoBar(
         handleOfferedMessage()
     }
 
-    InfoBarAnimation(
-        modifier = modifier
-            .fillMaxWidth()
-            .semantics {
-                liveRegion = LiveRegionMode.Polite
-                contentDescription = INFO_BAR_CONTENT_DESCRIPTION
-                dismiss {
-                    onDismiss()
-                    true
-                }
-            },
-        messageShown = isShown.value,
-        messageAvailable = displayedMessage.value != null,
-        fadeEffect = fadeEffect,
-        scaleEffect = scaleEffect,
-        slideEffect = slideEffect,
-        enterTransitionMillis = enterTransitionMillis,
-        exitTransitionMillis = exitTransitionMillis,
-        wrapInsideBox = wrapInsideBox
+    var contentHeightPx by remember { mutableStateOf(0) }
+    var refreshRestingTranslationY by remember { mutableStateOf(false) }
+    val restingTranslationY by remember(slideEffect, contentHeightPx) {
+        derivedStateOf {
+            when (slideEffect) {
+                InfoBarSlideEffect.NONE -> 0f
+                InfoBarSlideEffect.FROM_TOP -> -contentHeightPx.toFloat()
+                InfoBarSlideEffect.FROM_BOTTOM -> contentHeightPx.toFloat()
+            }
+        }
+    }
+    val durationMillis = when {
+        isShown -> enterTransitionMillis
+        else -> exitTransitionMillis
+    }
+    val animatedAlpha by transition.animateFloat(
+        label = "InfoBar - animatedAlpha",
+        transitionSpec = {
+            tween(
+                easing = LinearEasing,
+                durationMillis = durationMillis
+            )
+        }
     ) {
-        displayedMessage.value?.let { message ->
+        if (it || !fadeEffect) 1f else 0f
+    }
+    val alpha by remember(refreshRestingTranslationY, contentHeightPx) {
+        derivedStateOf {
+            if (refreshRestingTranslationY || contentHeightPx == 0) 0f else animatedAlpha
+        }
+    }
+    val animatedScale by transition.animateFloat(
+        label = "InfoBar - animatedScale",
+        transitionSpec = {
+            tween(
+                easing = FastOutSlowInEasing,
+                durationMillis = durationMillis
+            )
+        }
+    ) {
+        if (it || !scaleEffect) 1f else 0.8f
+    }
+    val animatedTranslationY by transition.animateFloat(
+        label = "InfoBar - animatedTranslationY",
+        transitionSpec = {
+            if (refreshRestingTranslationY || contentHeightPx == 0) snap() else tween(
+                easing = FastOutSlowInEasing,
+                durationMillis = durationMillis
+            )
+        }
+    ) {
+        if (!it || refreshRestingTranslationY) restingTranslationY else 0f
+    }
+    if (refreshRestingTranslationY && animatedTranslationY == restingTranslationY) {
+        refreshRestingTranslationY = false
+    }
+    val surfaceComposable: @Composable (Modifier) -> Unit = {
+        displayedMessage?.let { message ->
             Surface(
                 modifier = it,
                 elevation = elevation,
@@ -91,6 +136,40 @@ fun <T : BaseInfoBarMessage> InfoBar(
             ) {
                 content(message)
             }
+        }
+    }
+    if (displayedMessage != null) {
+        val contentModifier = modifier
+            .onSizeChanged {
+                if (contentHeightPx != it.height) {
+                    refreshRestingTranslationY = true
+                    contentHeightPx = it.height
+                }
+            }
+            .graphicsLayer(
+                scaleX = animatedScale,
+                scaleY = animatedScale,
+                translationY = animatedTranslationY
+            )
+        if (wrapInsideBox) {
+            /**
+             * Note: Jetpack compose 1.0.0 will clip the shadow of an elevated item (in our case,
+             *  the surface) when alpha is less than 1.0f. As a workaround, the content is wrapped
+             *  inside a Box layout that fills the maximum available size. The alpha is then applied
+             *  to that Box instead of the content. Disable this workaround by setting the
+             *  wrapInsideBox flag to false when calling the InfoBar.
+             */
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .graphicsLayer(alpha = alpha)
+            ) {
+                surfaceComposable(contentModifier)
+            }
+        } else {
+            surfaceComposable(
+                contentModifier.graphicsLayer(alpha = alpha)
+            )
         }
     }
 }
