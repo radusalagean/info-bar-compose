@@ -11,6 +11,10 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalAccessibilityManager
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -145,8 +149,9 @@ fun <T : BaseInfoBarMessage> InfoBar(
             }
         }
     }
-    if (displayedMessage != null) {
+    if (transition.currentState || transition.targetState) {
         val contentModifier = modifier
+            .fillMaxWidth()
             .onSizeChanged {
                 if (contentHeightPx != it.height) {
                     refreshRestingTranslationY = true
@@ -158,6 +163,10 @@ fun <T : BaseInfoBarMessage> InfoBar(
                 scaleY = animatedScale,
                 translationY = animatedTranslationY
             )
+            .semantics {
+                liveRegion = LiveRegionMode.Polite
+                contentDescription = INFO_BAR_CONTENT_DESCRIPTION
+            }
         if (wrapInsideExpandedBox) {
             /**
              * Note: Jetpack compose 1.0.0 will clip the shadow of an elevated item (in our case,
@@ -198,7 +207,7 @@ fun InfoBar(
     textAlign: TextAlign? = null,
     textLineHeight: TextUnit = TextUnit.Unspecified,
     textMaxLines: Int = 5,
-    textStyle: TextStyle = MaterialTheme.typography.body2,
+    textStyle: TextStyle = LocalTextStyle.current,
     actionColor: Color? = null,
     fadeEffect: Boolean = true,
     scaleEffect: Boolean = true,

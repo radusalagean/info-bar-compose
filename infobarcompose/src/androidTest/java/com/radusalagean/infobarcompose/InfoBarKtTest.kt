@@ -1,6 +1,5 @@
 package com.radusalagean.infobarcompose
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.MaterialTheme
@@ -17,7 +16,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
@@ -25,10 +23,9 @@ import com.radusalagean.infobarcompose.test.R
 import io.mockk.*
 
 /**
- * Gold screenshots are generated on a Pixel 2 Emulator - API 30
+ * Gold screenshots are generated on a Pixel 5 Emulator - API 31
  *  (Run tests on that device)
  */
-@ExperimentalAnimationApi
 class InfoBarKtTest {
 
     // Test name format: GIVEN_WHEN_THEN
@@ -36,24 +33,10 @@ class InfoBarKtTest {
     @get:Rule
     val rule = createComposeRule()
 
-    @Before
-    fun setUp() {
-        InfoBarDelay.setNoDelay()
-    }
-
     @Test
-    fun genericInfoBar_called_isDisplayedWithDelay() {
-        InfoBarDelay.resetDelayToDefault()
+    fun genericInfoBar_called_isDisplayed() {
         setContent { GenericInfoBarWithStringTitle() }
         waitForInfoBar()
-    }
-
-    @Test
-    fun genericInfoBar_called_infoBarIsDelayed() {
-        InfoBarDelay.resetDelayToDefault()
-        setContent { GenericInfoBarWithStringTitle() }
-        rule.onNodeWithContentDescription(INFO_BAR_CONTENT_DESCRIPTION)
-            .assertDoesNotExist()
     }
 
     @Test
@@ -66,7 +49,7 @@ class InfoBarKtTest {
     }
 
     @Test
-    fun genericInfoBar_called_onMessageTimeoutCalledWhenTimedOut() {
+    fun genericInfoBar_called_onMessageTimeoutCalledWhenTimedOut() { // TODO
         val onMessageTimeout: () -> Unit = mockk(relaxed = true)
         setContent { GenericInfoBarWithMockedOnMessageTimeout(onMessageTimeout = onMessageTimeout) }
         rule.onNodeWithContentDescription(INFO_BAR_CONTENT_DESCRIPTION).assertExists()
@@ -126,8 +109,60 @@ class InfoBarKtTest {
     fun genericInfoBar_calledWithFadeEffectOnly_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
         setContent { GenericInfoBarWithFadeEffectOnly() }
-        rule.mainClock.advanceTimeBy(75)
-        checkAgainstScreenshot("generic_info_bar_with_fade_effect_only_75ms_in")
+        repeat(8) {
+            rule.mainClock.advanceTimeByFrame()
+        }
+        checkAgainstScreenshot("generic_info_bar_with_fade_effect_only_8_frames_in")
+    }
+
+    @Test
+    fun genericInfoBar_calledWithScaleEffectOnly_matchesScreenshot() {
+        rule.mainClock.autoAdvance = false
+        setContent { GenericInfoBarWithScaleEffectOnly() }
+        repeat(8) {
+            rule.mainClock.advanceTimeByFrame()
+        }
+        checkAgainstScreenshot("generic_info_bar_with_scale_effect_only_8_frames_in")
+    }
+
+    @Test
+    fun genericInfoBar_calledWithSlideFromTopEffectOnly_matchesScreenshot() {
+        rule.mainClock.autoAdvance = false
+        setContent { GenericInfoBarWithSlideFromTopEffectOnly() }
+        repeat(8) {
+            rule.mainClock.advanceTimeByFrame()
+        }
+        checkAgainstScreenshot("generic_info_bar_with_slide_from_top_effect_only_8_frames_in")
+    }
+
+    @Test
+    fun genericInfoBar_calledWithSlideFromBottomEffectOnly_matchesScreenshot() {
+        rule.mainClock.autoAdvance = false
+        setContent { GenericInfoBarWithSlideFromBottomEffectOnly() }
+        repeat(8) {
+            rule.mainClock.advanceTimeByFrame()
+        }
+        checkAgainstScreenshot("generic_info_bar_with_slide_from_bottom_effect_only_8_frames_in")
+    }
+
+    @Test
+    fun genericInfoBar_calledWithFadeAndScaleEffects_matchesScreenshot() {
+        rule.mainClock.autoAdvance = false
+        setContent { GenericInfoBarWithFadeAndScaleEffects() }
+        repeat(8) {
+            rule.mainClock.advanceTimeByFrame()
+        }
+        checkAgainstScreenshot("generic_info_bar_with_fade_and_scale_effects_8_frames_in")
+    }
+
+    @Test
+    fun genericInfoBar_calledWithAllEffects_matchesScreenshot() {
+        rule.mainClock.autoAdvance = false
+        setContent { GenericInfoBarWithAllEffects() }
+        repeat(8) {
+            rule.mainClock.advanceTimeByFrame()
+        }
+        checkAgainstScreenshot("generic_info_bar_with_all_effects_8_frames_in")
     }
 
     @Test
@@ -158,7 +193,7 @@ class InfoBarKtTest {
     private fun GenericInfoBarWithMockedOnMessageTimeout(onMessageTimeout: () -> Unit) {
         InfoBar(
             offeredMessage = InfoBarMessage(text = EXAMPLE_SHORT_STRING, displayTimeSeconds = 1),
-            onMessageTimeout = onMessageTimeout
+            onDismiss = onMessageTimeout
         )
     }
 
@@ -233,7 +268,58 @@ class InfoBarKtTest {
         InfoBar(
             offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
             fadeEffect = true,
+            scaleEffect = false,
             slideEffect = InfoBarSlideEffect.NONE
+        ) {}
+    }
+
+    @Composable
+    fun GenericInfoBarWithScaleEffectOnly() {
+        InfoBar(
+            offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
+            fadeEffect = false,
+            scaleEffect = true,
+            slideEffect = InfoBarSlideEffect.NONE
+        ) {}
+    }
+
+    @Composable
+    fun GenericInfoBarWithSlideFromTopEffectOnly() {
+        InfoBar(
+            offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
+            fadeEffect = false,
+            scaleEffect = false,
+            slideEffect = InfoBarSlideEffect.FROM_TOP
+        ) {}
+    }
+
+    @Composable
+    fun GenericInfoBarWithSlideFromBottomEffectOnly() {
+        InfoBar(
+            offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
+            fadeEffect = false,
+            scaleEffect = false,
+            slideEffect = InfoBarSlideEffect.FROM_BOTTOM
+        ) {}
+    }
+
+    @Composable
+    fun GenericInfoBarWithFadeAndScaleEffects() {
+        InfoBar(
+            offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
+            fadeEffect = true,
+            scaleEffect = true,
+            slideEffect = InfoBarSlideEffect.NONE
+        ) {}
+    }
+
+    @Composable
+    fun GenericInfoBarWithAllEffects() {
+        InfoBar(
+            offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
+            fadeEffect = true,
+            scaleEffect = true,
+            slideEffect = InfoBarSlideEffect.FROM_TOP
         ) {}
     }
     
