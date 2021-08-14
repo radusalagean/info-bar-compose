@@ -49,7 +49,7 @@ class InfoBarKtTest {
     }
 
     @Test
-    fun genericInfoBar_called_onMessageTimeoutCalledWhenTimedOut() { // TODO
+    fun genericInfoBar_called_onMessageTimeoutCalledWhenTimedOut() {
         val onMessageTimeout: () -> Unit = mockk(relaxed = true)
         setContent { GenericInfoBarWithMockedOnMessageTimeout(onMessageTimeout = onMessageTimeout) }
         rule.onNodeWithContentDescription(INFO_BAR_CONTENT_DESCRIPTION).assertExists()
@@ -67,6 +67,12 @@ class InfoBarKtTest {
     fun genericInfoBar_calledWithStringTitle_matchesScreenshot() {
         setContent { GenericInfoBarWithStringTitle() }
         checkAgainstScreenshot("generic_info_bar_with_string_title")
+    }
+
+    @Test
+    fun genericInfoBar_calledWithStringTitleNoWrap_matchesScreenshot() {
+        setContent { GenericInfoBarWithStringTitleNoWrap() }
+        checkAgainstScreenshot("generic_info_bar_with_string_title_no_wrap")
     }
 
     @Test
@@ -176,6 +182,14 @@ class InfoBarKtTest {
     @Composable
     private fun GenericInfoBarWithStringTitle() {
         InfoBar(offeredMessage = InfoBarMessage(text = EXAMPLE_SHORT_STRING)) {}
+    }
+
+    @Composable
+    private fun GenericInfoBarWithStringTitleNoWrap() {
+        InfoBar(
+            offeredMessage = InfoBarMessage(text = EXAMPLE_SHORT_STRING),
+            wrapInsideExpandedBox = false
+        ) {}
     }
 
     @Composable
