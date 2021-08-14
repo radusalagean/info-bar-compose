@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.*
@@ -115,60 +118,72 @@ class InfoBarKtTest {
     fun genericInfoBar_calledWithFadeEffectOnly_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
         setContent { GenericInfoBarWithFadeEffectOnly() }
-        repeat(8) {
-            rule.mainClock.advanceTimeByFrame()
-        }
-        checkAgainstScreenshot("generic_info_bar_with_fade_effect_only_8_frames_in")
+        advanceTimeBy(128)
+        checkAgainstScreenshot("generic_info_bar_with_fade_effect_only_128ms_in")
     }
 
     @Test
     fun genericInfoBar_calledWithScaleEffectOnly_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
         setContent { GenericInfoBarWithScaleEffectOnly() }
-        repeat(8) {
-            rule.mainClock.advanceTimeByFrame()
-        }
-        checkAgainstScreenshot("generic_info_bar_with_scale_effect_only_8_frames_in")
+        advanceTimeBy(128)
+        checkAgainstScreenshot("generic_info_bar_with_scale_effect_only_128ms_in")
     }
 
     @Test
     fun genericInfoBar_calledWithSlideFromTopEffectOnly_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
         setContent { GenericInfoBarWithSlideFromTopEffectOnly() }
-        repeat(8) {
-            rule.mainClock.advanceTimeByFrame()
-        }
-        checkAgainstScreenshot("generic_info_bar_with_slide_from_top_effect_only_8_frames_in")
+        advanceTimeBy(128)
+        checkAgainstScreenshot("generic_info_bar_with_slide_from_top_effect_only_128ms_in")
     }
 
     @Test
     fun genericInfoBar_calledWithSlideFromBottomEffectOnly_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
         setContent { GenericInfoBarWithSlideFromBottomEffectOnly() }
-        repeat(8) {
-            rule.mainClock.advanceTimeByFrame()
-        }
-        checkAgainstScreenshot("generic_info_bar_with_slide_from_bottom_effect_only_8_frames_in")
+        advanceTimeBy(128)
+        checkAgainstScreenshot("generic_info_bar_with_slide_from_bottom_effect_only_128ms_in")
     }
 
     @Test
     fun genericInfoBar_calledWithFadeAndScaleEffects_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
         setContent { GenericInfoBarWithFadeAndScaleEffects() }
-        repeat(8) {
-            rule.mainClock.advanceTimeByFrame()
-        }
-        checkAgainstScreenshot("generic_info_bar_with_fade_and_scale_effects_8_frames_in")
+        advanceTimeBy(128)
+        checkAgainstScreenshot("generic_info_bar_with_fade_and_scale_effects_128ms_in")
     }
 
     @Test
     fun genericInfoBar_calledWithAllEffects_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
         setContent { GenericInfoBarWithAllEffects() }
-        repeat(8) {
-            rule.mainClock.advanceTimeByFrame()
-        }
-        checkAgainstScreenshot("generic_info_bar_with_all_effects_8_frames_in")
+        advanceTimeBy(128)
+        checkAgainstScreenshot("generic_info_bar_with_all_effects_128ms_in")
+    }
+
+    @Test
+    fun genericInfoBar_calledWithAllEffectsAndDelayedUntilTransitionsOut_matchesScreenshot() {
+        rule.mainClock.autoAdvance = false
+        setContent { GenericInfoBarWithAllEffects() }
+        advanceTimeBy(4209)
+        checkAgainstScreenshot("generic_info_bar_with_all_effects_4209ms_in")
+    }
+
+    @Test
+    fun genericInfoBar_calledWhenAnotherMessageIsAlreadyDisplayed_matchesScreenshots() {
+        rule.mainClock.autoAdvance = false
+        var message: InfoBarMessage by mutableStateOf(InfoBarMessage(EXAMPLE_SHORT_STRING))
+        setContent { GenericInfoBarWithFadeAndScaleEffects(message) }
+        advanceTimeBy(2000)
+        checkAgainstScreenshot("stacked_generic_info_bar_snap_1_2000ms_in")
+        message = InfoBarMessage(EXAMPLE_LONG_STRING)
+        advanceTimeBy(64)
+        checkAgainstScreenshot("stacked_generic_info_bar_snap_2_another_64ms_in")
+        advanceTimeBy(32)
+        checkAgainstScreenshot("stacked_generic_info_bar_snap_3_another_32ms_in")
+        advanceTimeBy(150)
+        checkAgainstScreenshot("stacked_generic_info_bar_snap_4_another_150ms_in")
     }
 
     @Test
@@ -318,9 +333,9 @@ class InfoBarKtTest {
     }
 
     @Composable
-    fun GenericInfoBarWithFadeAndScaleEffects() {
+    fun GenericInfoBarWithFadeAndScaleEffects(offeredMessage: InfoBarMessage = InfoBarMessage(EXAMPLE_SHORT_STRING)) {
         InfoBar(
-            offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
+            offeredMessage = offeredMessage,
             fadeEffect = true,
             scaleEffect = true,
             slideEffect = InfoBarSlideEffect.NONE
@@ -370,6 +385,13 @@ class InfoBarKtTest {
             goldenName = goldenName,
             node = rule.onRoot()
         )
+    }
+
+    private fun advanceTimeBy(millis: Int) {
+        // Workaround until https://issuetracker.google.com/issues/196060592 is fixed
+        repeat(millis / 16) {
+            rule.mainClock.advanceTimeByFrame()
+        }
     }
 
     private fun debugLog() {
