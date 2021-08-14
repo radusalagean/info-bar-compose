@@ -38,7 +38,7 @@ fun <T : BaseInfoBarMessage> InfoBar(
     slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.NONE,
     enterTransitionMillis: Int = 150,
     exitTransitionMillis: Int = 75,
-    wrapInsideBox: Boolean = true,
+    wrapInsideExpandedBox: Boolean = true,
     onDismiss: () -> Unit
 ) {
 
@@ -158,13 +158,13 @@ fun <T : BaseInfoBarMessage> InfoBar(
                 scaleY = animatedScale,
                 translationY = animatedTranslationY
             )
-        if (wrapInsideBox) {
+        if (wrapInsideExpandedBox) {
             /**
              * Note: Jetpack compose 1.0.0 will clip the shadow of an elevated item (in our case,
              *  the surface) when alpha is less than 1.0f. As a workaround, the content is wrapped
              *  inside a Box layout that fills the maximum available size. The alpha is then applied
              *  to that Box instead of the content. Disable this workaround by setting the
-             *  wrapInsideBox flag to false when calling the InfoBar.
+             *  wrapInsideExpandedBox flag to false when calling the InfoBar.
              */
             Box(
                 Modifier
@@ -198,14 +198,14 @@ fun InfoBar(
     textAlign: TextAlign? = null,
     textLineHeight: TextUnit = TextUnit.Unspecified,
     textMaxLines: Int = 5,
-    textStyle: TextStyle = LocalTextStyle.current,
+    textStyle: TextStyle = MaterialTheme.typography.body2,
     actionColor: Color? = null,
     fadeEffect: Boolean = true,
     scaleEffect: Boolean = true,
     slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.NONE,
     enterTransitionMillis: Int = 150,
     exitTransitionMillis: Int = 75,
-    wrapInsideBox: Boolean = true,
+    wrapInsideExpandedBox: Boolean = true,
     onDismiss: () -> Unit
 ) {
     val contentComposable: @Composable (InfoBarMessage) -> Unit = { message ->
@@ -217,38 +217,41 @@ fun InfoBar(
                 bottom = 6.dp
             )
         ) {
-            Text(
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically),
-                text = message.getTextString(),
-                color = message.textColor ?: textColor ?: MaterialTheme.colors.surface,
-                fontSize = textFontSize,
-                fontStyle = textFontStyle,
-                fontWeight = textFontWeight,
-                fontFamily = textFontFamily,
-                letterSpacing = textLetterSpacing,
-                textDecoration = textDecoration,
-                textAlign = textAlign ?: if (!message.getActionString().isNullOrBlank())
-                    TextAlign.Start else TextAlign.Center,
-                lineHeight = textLineHeight,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = textMaxLines,
-                style = textStyle
-            )
-            val actionString = message.getActionString()
-            if (!actionString.isNullOrBlank()) {
-                TextButton(
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(start = 8.dp),
-                    onClick = message.onAction ?: {},
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = message.actionColor ?: actionColor
-                        ?: SnackbarDefaults.primaryActionColor
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                ProvideTextStyle(value = textStyle) {
+                    Text(
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
+                            .padding(vertical = 8.dp),
+                        text = message.getTextString(),
+                        color = message.textColor ?: textColor ?: MaterialTheme.colors.surface,
+                        fontSize = textFontSize,
+                        fontStyle = textFontStyle,
+                        fontWeight = textFontWeight,
+                        fontFamily = textFontFamily,
+                        letterSpacing = textLetterSpacing,
+                        textDecoration = textDecoration,
+                        textAlign = textAlign,
+                        lineHeight = textLineHeight,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = textMaxLines
                     )
-                ) {
-                    Text(actionString)
+                    val actionString = message.getActionString()
+                    if (!actionString.isNullOrBlank()) {
+                        TextButton(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 8.dp),
+                            onClick = message.onAction ?: {},
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = message.actionColor ?: actionColor
+                                ?: SnackbarDefaults.primaryActionColor
+                            )
+                        ) {
+                            Text(actionString)
+                        }
+                    }
                 }
             }
         }
@@ -265,7 +268,7 @@ fun InfoBar(
         slideEffect = slideEffect,
         enterTransitionMillis = enterTransitionMillis,
         exitTransitionMillis = exitTransitionMillis,
-        wrapInsideBox = wrapInsideBox,
+        wrapInsideExpandedBox = wrapInsideExpandedBox,
         onDismiss = onDismiss
     )
 }
