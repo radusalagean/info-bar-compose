@@ -47,7 +47,7 @@ val customInfoBarContent: @Composable (CustomInfoBarMessage) -> Unit = { message
                 .align(Alignment.Center)
                 .onGloballyPositioned { imageSize = it.size },
             painter = painterResource(message.bannerImage),
-            contentDescription = "Banner",
+            contentDescription = null,
             contentScale = ContentScale.Crop
         )
         Row(

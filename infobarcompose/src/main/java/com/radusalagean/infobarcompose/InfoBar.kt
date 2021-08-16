@@ -11,10 +11,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalAccessibilityManager
-import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.liveRegion
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -27,7 +24,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.*
 
-internal const val INFO_BAR_CONTENT_DESCRIPTION = "InfoBar"
+internal const val INFO_BAR_TEST_TAG = "InfoBar"
 
 @Composable
 fun <T : BaseInfoBarMessage> InfoBar(
@@ -173,7 +170,11 @@ fun <T : BaseInfoBarMessage> InfoBar(
             )
             .semantics {
                 liveRegion = LiveRegionMode.Polite
-                contentDescription = INFO_BAR_CONTENT_DESCRIPTION
+                testTag = INFO_BAR_TEST_TAG
+                dismiss {
+                    onDismiss()
+                    true
+                }
             }
         if (wrapInsideExpandedBox) {
             /**

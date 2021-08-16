@@ -55,10 +55,10 @@ class InfoBarKtTest {
     fun genericInfoBar_called_onMessageTimeoutCalledWhenTimedOut() {
         val onMessageTimeout: () -> Unit = mockk(relaxed = true)
         setContent { GenericInfoBarWithMockedOnMessageTimeout(onMessageTimeout = onMessageTimeout) }
-        rule.onNodeWithContentDescription(INFO_BAR_CONTENT_DESCRIPTION).assertExists()
+        rule.onNodeWithTag(INFO_BAR_TEST_TAG).assertExists()
         verify(exactly = 0) { onMessageTimeout() }
         rule.waitUntil(2000) {
-            rule.onAllNodesWithContentDescription(INFO_BAR_CONTENT_DESCRIPTION)
+            rule.onAllNodesWithTag(INFO_BAR_TEST_TAG)
                 .fetchSemanticsNodes().isEmpty()
         }
         verify(exactly = 1) { onMessageTimeout() }
@@ -366,7 +366,7 @@ class InfoBarKtTest {
 
     private fun waitForInfoBar() {
         rule.waitUntil {
-            rule.onAllNodesWithContentDescription(INFO_BAR_CONTENT_DESCRIPTION)
+            rule.onAllNodesWithTag(INFO_BAR_TEST_TAG)
                 .fetchSemanticsNodes().size == 1
         }
     }
