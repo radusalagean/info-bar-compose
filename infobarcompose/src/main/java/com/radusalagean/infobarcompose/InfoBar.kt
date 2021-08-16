@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalAccessibilityManager
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
@@ -54,7 +54,10 @@ fun <T : BaseInfoBarMessage> InfoBar(
 
     var displayedMessage: T? by remember { mutableStateOf(null) }
     var isShown: Boolean by remember { mutableStateOf(false) }
+    var contentMeasurePass: Boolean by remember { mutableStateOf(false) }
     val accessibilityManager = LocalAccessibilityManager.current
+    val coroutineScope = rememberCoroutineScope()
+    var showMessageJob: Job? by remember { mutableStateOf(null) }
     val transition = updateTransition(
         targetState = isShown,
         label = "InfoBar - transition"
@@ -64,16 +67,22 @@ fun <T : BaseInfoBarMessage> InfoBar(
         if (transition.currentState && transition.targetState) {
             isShown = false
             delay(getExitTransitionMillis().toLong())
-        }
+        } else if (transition.targetState) isShown = false
+        showMessageJob?.cancel()
+        if (offeredMessage != null) contentMeasurePass = true
         displayedMessage = offeredMessage
-        if (offeredMessage == null) return
-        isShown = true
-        delay(getEnterTransitionMillis().toLong())
-        val delayTime = offeredMessage.getInfoBarTimeout(accessibilityManager)
-        delay(delayTime)
-        isShown = false
-        delay(getExitTransitionMillis().toLong())
-        onDismiss()
+    }
+
+    suspend fun showMessage() {
+        displayedMessage?.let {
+            isShown = true
+            delay(getEnterTransitionMillis().toLong())
+            val delayTime = it.getInfoBarTimeout(accessibilityManager)
+            delay(delayTime)
+            isShown = false
+            delay(getExitTransitionMillis().toLong())
+            onDismiss()
+        }
     }
 
     LaunchedEffect(offeredMessage) {
@@ -81,7 +90,6 @@ fun <T : BaseInfoBarMessage> InfoBar(
     }
 
     var contentHeightPx by remember { mutableStateOf(0) }
-    var refreshRestingTranslationY by remember { mutableStateOf(false) }
     val restingTranslationY by remember(slideEffect, contentHeightPx) {
         derivedStateOf {
             when (slideEffect) {
@@ -94,47 +102,6 @@ fun <T : BaseInfoBarMessage> InfoBar(
     val durationMillis = when {
         isShown -> getEnterTransitionMillis()
         else -> getExitTransitionMillis()
-    }
-    val animatedAlpha by transition.animateFloat(
-        label = "InfoBar - animatedAlpha",
-        transitionSpec = {
-            tween(
-                easing = LinearEasing,
-                durationMillis = durationMillis
-            )
-        }
-    ) {
-        if (it || !fadeEffect) 1f else 0f
-    }
-    val alpha by remember(refreshRestingTranslationY, contentHeightPx) {
-        derivedStateOf {
-            if (refreshRestingTranslationY || contentHeightPx == 0) 0f else animatedAlpha
-        }
-    }
-    val animatedScale by transition.animateFloat(
-        label = "InfoBar - animatedScale",
-        transitionSpec = {
-            tween(
-                easing = FastOutSlowInEasing,
-                durationMillis = durationMillis
-            )
-        }
-    ) {
-        if (it || !scaleEffect) 1f else 0.8f
-    }
-    val animatedTranslationY by transition.animateFloat(
-        label = "InfoBar - animatedTranslationY",
-        transitionSpec = {
-            if (refreshRestingTranslationY || contentHeightPx == 0) snap() else tween(
-                easing = FastOutSlowInEasing,
-                durationMillis = durationMillis
-            )
-        }
-    ) {
-        if (!it || refreshRestingTranslationY) restingTranslationY else 0f
-    }
-    if (refreshRestingTranslationY && animatedTranslationY == restingTranslationY) {
-        refreshRestingTranslationY = false
     }
     val surfaceComposable: @Composable (Modifier) -> Unit = {
         displayedMessage?.let { message ->
@@ -149,19 +116,60 @@ fun <T : BaseInfoBarMessage> InfoBar(
             }
         }
     }
-    if (transition.currentState || transition.targetState) {
+    if (contentMeasurePass) {
+        surfaceComposable(
+            Modifier
+                .fillMaxWidth()
+                .onGloballyPositioned {
+                    if (!contentMeasurePass) return@onGloballyPositioned
+                    if (contentHeightPx != it.size.height)
+                        contentHeightPx = it.size.height
+                    contentMeasurePass = false
+                    showMessageJob?.cancel()
+                    showMessageJob = coroutineScope.launch { showMessage() }
+                }
+                .graphicsLayer(alpha = 0f)
+        )
+    } else if (transition.currentState || transition.targetState) {
+        val alpha by transition.animateFloat(
+            label = "InfoBar - alpha",
+            transitionSpec = {
+                tween(
+                    easing = LinearEasing,
+                    durationMillis = durationMillis
+                )
+            }
+        ) {
+            if (it || !fadeEffect) 1f else 0f
+        }
+        val scale by transition.animateFloat(
+            label = "InfoBar - scale",
+            transitionSpec = {
+                tween(
+                    easing = FastOutSlowInEasing,
+                    durationMillis = durationMillis
+                )
+            }
+        ) {
+            if (it || !scaleEffect) 1f else 0.8f
+        }
+        val translationY by transition.animateFloat(
+            label = "InfoBar - translationY",
+            transitionSpec = {
+                tween(
+                    easing = FastOutSlowInEasing,
+                    durationMillis = durationMillis
+                )
+            }
+        ) {
+            if (!it) restingTranslationY else 0f
+        }
         val contentModifier = modifier
             .fillMaxWidth()
-            .onSizeChanged {
-                if (contentHeightPx != it.height) {
-                    refreshRestingTranslationY = true
-                    contentHeightPx = it.height
-                }
-            }
             .graphicsLayer(
-                scaleX = animatedScale,
-                scaleY = animatedScale,
-                translationY = animatedTranslationY
+                scaleX = scale,
+                scaleY = scale,
+                translationY = translationY
             )
             .semantics {
                 liveRegion = LiveRegionMode.Polite

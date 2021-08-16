@@ -91,7 +91,6 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
             }
             InfoBar( // Generic InfoBar
                 modifier = Modifier
-                    .wrapContentSize()
                     .padding(16.dp)
                     .align(viewModel.infoBarAlignment),
                 offeredMessage = viewModel.infoBarMessage,
