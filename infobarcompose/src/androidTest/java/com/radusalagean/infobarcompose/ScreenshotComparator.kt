@@ -24,8 +24,7 @@ import java.io.FileOutputStream
  * Screenshots are saved on device in `/data/data/{package}/files`.
  *
  * Screenshot names will have the bitmap size included. This allows for different golden images
- * to be used for different screen densities. You will need to ensure that golden images with the
- * appropriate size in the name is included for all supported densities.
+ * to be used for different screen densities.
  */
 @RequiresApi(Build.VERSION_CODES.O)
 fun assertScreenshotMatchesGolden(

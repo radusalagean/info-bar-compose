@@ -166,8 +166,8 @@ class InfoBarKtTest {
     fun genericInfoBar_calledWithAllEffectsAndDelayedUntilTransitionsOut_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
         setContent { GenericInfoBarWithAllEffects() }
-        advanceTimeBy(4209)
-        checkAgainstScreenshot("generic_info_bar_with_all_effects_4209ms_in")
+        advanceTimeBy(4225)
+        checkAgainstScreenshot("generic_info_bar_with_all_effects_4225ms_in")
     }
 
     @Test
@@ -180,8 +180,8 @@ class InfoBarKtTest {
         message = InfoBarMessage(EXAMPLE_LONG_STRING)
         advanceTimeBy(64)
         checkAgainstScreenshot("stacked_generic_info_bar_snap_2_another_64ms_in")
-        advanceTimeBy(32)
-        checkAgainstScreenshot("stacked_generic_info_bar_snap_3_another_32ms_in")
+        advanceTimeBy(80)
+        checkAgainstScreenshot("stacked_generic_info_bar_snap_3_another_80ms_in")
         advanceTimeBy(150)
         checkAgainstScreenshot("stacked_generic_info_bar_snap_4_another_150ms_in")
     }
