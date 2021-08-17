@@ -10,7 +10,7 @@
     <string name="radio_group_message_position_bottom">Bottom</string>
 
     <string name="radio_group_message_type">Type</string>
-    <string name="radio_group_message_type_generic">Generic</string>
+    <string name="radio_group_message_type_standard">Standard</string>
     <string name="radio_group_message_type_custom_1">Custom 1</string>
     <string name="radio_group_message_type_custom_2">Custom 2</string>
 

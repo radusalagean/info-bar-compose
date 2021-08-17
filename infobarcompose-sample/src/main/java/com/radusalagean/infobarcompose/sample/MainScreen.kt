@@ -89,7 +89,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                         .align(Alignment.CenterHorizontally)
                 )
             }
-            InfoBar( // Generic InfoBar
+            InfoBar( // Standard InfoBar
                 modifier = Modifier
                     .padding(16.dp)
                     .align(viewModel.infoBarAlignment),
@@ -97,9 +97,9 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 fadeEffect = viewModel.infoBarFadeEffect,
                 scaleEffect = viewModel.infoBarScaleEffect,
                 slideEffect = viewModel.infoBarSlideEffect,
-                onDismiss = viewModel::onInfoBarMessageTimeout
+                onDismiss = viewModel::onInfoBarMessageDismiss
             )
-            InfoBar( // Custom InfoBar
+            InfoBar( // Generic InfoBar
                 modifier = Modifier
                     .padding(16.dp)
                     .align(viewModel.infoBarAlignment),
@@ -108,7 +108,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 fadeEffect = viewModel.infoBarFadeEffect,
                 scaleEffect = viewModel.infoBarScaleEffect,
                 slideEffect = viewModel.infoBarSlideEffect,
-                onDismiss = viewModel::onCustomInfoBarMessageTimeout
+                onDismiss = viewModel::onCustomInfoBarMessageDismiss
             )
         }
     }

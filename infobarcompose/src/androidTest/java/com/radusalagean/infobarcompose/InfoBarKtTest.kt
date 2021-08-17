@@ -37,24 +37,24 @@ class InfoBarKtTest {
     val rule = createComposeRule()
 
     @Test
-    fun genericInfoBar_called_isDisplayed() {
-        setContent { GenericInfoBarWithStringTitle() }
+    fun standardInfoBar_called_isDisplayed() {
+        setContent { StandardInfoBarWithStringTitle() }
         waitForInfoBar()
     }
 
     @Test
-    fun genericInfoBar_calledWithActionAndTappedAction_onActionCalled() {
+    fun standardInfoBar_calledWithActionAndTappedAction_onActionCalled() {
         val onAction: () -> Unit = mockk(relaxed = true)
-        setContent { GenericInfoBarWithStringTitleAndAction(onAction) }
+        setContent { StandardInfoBarWithStringTitleAndAction(onAction) }
         verify(exactly = 0) { onAction() }
         rule.onNodeWithText(EXAMPLE_ACTION).performClick()
         verify(exactly = 1) { onAction() }
     }
 
     @Test
-    fun genericInfoBar_called_onMessageTimeoutCalledWhenTimedOut() {
+    fun standardInfoBar_called_onMessageTimeoutCalledWhenTimedOut() {
         val onMessageTimeout: () -> Unit = mockk(relaxed = true)
-        setContent { GenericInfoBarWithMockedOnMessageTimeout(onMessageTimeout = onMessageTimeout) }
+        setContent { StandardInfoBarWithMockedOnMessageTimeout(onMessageTimeout = onMessageTimeout) }
         rule.onNodeWithTag(INFO_BAR_TEST_TAG).assertExists()
         verify(exactly = 0) { onMessageTimeout() }
         rule.waitUntil(2000) {
@@ -67,123 +67,123 @@ class InfoBarKtTest {
     // Screenshot-based tests
 
     @Test
-    fun genericInfoBar_calledWithStringTitle_matchesScreenshot() {
-        setContent { GenericInfoBarWithStringTitle() }
-        checkAgainstScreenshot("generic_info_bar_with_string_title")
+    fun standardInfoBar_calledWithStringTitle_matchesScreenshot() {
+        setContent { StandardInfoBarWithStringTitle() }
+        checkAgainstScreenshot("standard_info_bar_with_string_title")
     }
 
     @Test
-    fun genericInfoBar_calledWithStringTitleNoWrap_matchesScreenshot() {
-        setContent { GenericInfoBarWithStringTitleNoWrap() }
-        checkAgainstScreenshot("generic_info_bar_with_string_title_no_wrap")
+    fun standardInfoBar_calledWithStringTitleNoWrap_matchesScreenshot() {
+        setContent { StandardInfoBarWithStringTitleNoWrap() }
+        checkAgainstScreenshot("standard_info_bar_with_string_title_no_wrap")
     }
 
     @Test
-    fun genericInfoBar_calledWithStringTitleAndAction_matchesScreenshot() {
-        setContent { GenericInfoBarWithStringTitleAndAction() }
-        checkAgainstScreenshot("generic_info_bar_with_string_title_and_action")
+    fun standardInfoBar_calledWithStringTitleAndAction_matchesScreenshot() {
+        setContent { StandardInfoBarWithStringTitleAndAction() }
+        checkAgainstScreenshot("standard_info_bar_with_string_title_and_action")
     }
 
     @Test
-    fun genericInfoBar_calledWithOptionalStylingParams_matchesScreenshot() {
-        setContent { GenericInfoBarWithOptionalStylingParams() }
-        checkAgainstScreenshot("generic_info_bar_with_optional_styling_params")
+    fun standardInfoBar_calledWithOptionalStylingParams_matchesScreenshot() {
+        setContent { StandardInfoBarWithOptionalStylingParams() }
+        checkAgainstScreenshot("standard_info_bar_with_optional_styling_params")
     }
 
     @Test // Message styling should override composable styling
-    fun genericInfoBar_calledWithOptionalStylingParamsInMessageAndComposable_matchesScreenshot() {
-        setContent { GenericInfoBarWithOptionalStylingParamsInMessageAndComposable() }
-        checkAgainstScreenshot("generic_info_bar_with_optional_styling_params_in_message_and_composable")
+    fun standardInfoBar_calledWithOptionalStylingParamsInMessageAndComposable_matchesScreenshot() {
+        setContent { StandardInfoBarWithOptionalStylingParamsInMessageAndComposable() }
+        checkAgainstScreenshot("standard_info_bar_with_optional_styling_params_in_message_and_composable")
     }
 
     @Test
-    fun genericInfoBar_calledWithStringResourceForTextAndAction_matchesScreenshot() {
-        setContent { GenericInfoBarWithStringResourceForTextAndAction() }
-        checkAgainstScreenshot("generic_info_bar_with_string_resource_for_text_and_action")
+    fun standardInfoBar_calledWithStringResourceForTextAndAction_matchesScreenshot() {
+        setContent { StandardInfoBarWithStringResourceForTextAndAction() }
+        checkAgainstScreenshot("standard_info_bar_with_string_resource_for_text_and_action")
     }
 
     @Test
-    fun genericInfoBar_calledWithStringResourceAndArgsForTextAndAction_matchesScreenshot() {
-        setContent { GenericInfoBarWithStringResourceAndArgsForTextAndAction() }
-        checkAgainstScreenshot("generic_info_bar_with_string_resource_and_args_for_text_and_action")
+    fun standardInfoBar_calledWithStringResourceAndArgsForTextAndAction_matchesScreenshot() {
+        setContent { StandardInfoBarWithStringResourceAndArgsForTextAndAction() }
+        checkAgainstScreenshot("standard_info_bar_with_string_resource_and_args_for_text_and_action")
     }
 
     @Test
-    fun genericInfoBar_calledWithNoTitleOrAction_matchesScreenshot() {
-        setContent { GenericInfoBarWithNoTitleOrAction() }
-        checkAgainstScreenshot("generic_info_bar_with_no_title_or_action")
+    fun standardInfoBar_calledWithNoTitleOrAction_matchesScreenshot() {
+        setContent { StandardInfoBarWithNoTitleOrAction() }
+        checkAgainstScreenshot("standard_info_bar_with_no_title_or_action")
     }
 
     @Test
-    fun genericInfoBar_calledWithFadeEffectOnly_matchesScreenshot() {
+    fun standardInfoBar_calledWithFadeEffectOnly_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
-        setContent { GenericInfoBarWithFadeEffectOnly() }
+        setContent { StandardInfoBarWithFadeEffectOnly() }
         advanceTimeBy(128)
-        checkAgainstScreenshot("generic_info_bar_with_fade_effect_only_128ms_in")
+        checkAgainstScreenshot("standard_info_bar_with_fade_effect_only_128ms_in")
     }
 
     @Test
-    fun genericInfoBar_calledWithScaleEffectOnly_matchesScreenshot() {
+    fun standardInfoBar_calledWithScaleEffectOnly_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
-        setContent { GenericInfoBarWithScaleEffectOnly() }
+        setContent { StandardInfoBarWithScaleEffectOnly() }
         advanceTimeBy(128)
-        checkAgainstScreenshot("generic_info_bar_with_scale_effect_only_128ms_in")
+        checkAgainstScreenshot("standard_info_bar_with_scale_effect_only_128ms_in")
     }
 
     @Test
-    fun genericInfoBar_calledWithSlideFromTopEffectOnly_matchesScreenshot() {
+    fun standardInfoBar_calledWithSlideFromTopEffectOnly_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
-        setContent { GenericInfoBarWithSlideFromTopEffectOnly() }
+        setContent { StandardInfoBarWithSlideFromTopEffectOnly() }
         advanceTimeBy(128)
-        checkAgainstScreenshot("generic_info_bar_with_slide_from_top_effect_only_128ms_in")
+        checkAgainstScreenshot("standard_info_bar_with_slide_from_top_effect_only_128ms_in")
     }
 
     @Test
-    fun genericInfoBar_calledWithSlideFromBottomEffectOnly_matchesScreenshot() {
+    fun standardInfoBar_calledWithSlideFromBottomEffectOnly_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
-        setContent { GenericInfoBarWithSlideFromBottomEffectOnly() }
+        setContent { StandardInfoBarWithSlideFromBottomEffectOnly() }
         advanceTimeBy(128)
-        checkAgainstScreenshot("generic_info_bar_with_slide_from_bottom_effect_only_128ms_in")
+        checkAgainstScreenshot("standard_info_bar_with_slide_from_bottom_effect_only_128ms_in")
     }
 
     @Test
-    fun genericInfoBar_calledWithFadeAndScaleEffects_matchesScreenshot() {
+    fun standardInfoBar_calledWithFadeAndScaleEffects_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
-        setContent { GenericInfoBarWithFadeAndScaleEffects() }
+        setContent { StandardInfoBarWithFadeAndScaleEffects() }
         advanceTimeBy(128)
-        checkAgainstScreenshot("generic_info_bar_with_fade_and_scale_effects_128ms_in")
+        checkAgainstScreenshot("standard_info_bar_with_fade_and_scale_effects_128ms_in")
     }
 
     @Test
-    fun genericInfoBar_calledWithAllEffects_matchesScreenshot() {
+    fun standardInfoBar_calledWithAllEffects_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
-        setContent { GenericInfoBarWithAllEffects() }
+        setContent { StandardInfoBarWithAllEffects() }
         advanceTimeBy(128)
-        checkAgainstScreenshot("generic_info_bar_with_all_effects_128ms_in")
+        checkAgainstScreenshot("standard_info_bar_with_all_effects_128ms_in")
     }
 
     @Test
-    fun genericInfoBar_calledWithAllEffectsAndDelayedUntilTransitionsOut_matchesScreenshot() {
+    fun standardInfoBar_calledWithAllEffectsAndDelayedUntilTransitionsOut_matchesScreenshot() {
         rule.mainClock.autoAdvance = false
-        setContent { GenericInfoBarWithAllEffects() }
+        setContent { StandardInfoBarWithAllEffects() }
         advanceTimeBy(4225)
-        checkAgainstScreenshot("generic_info_bar_with_all_effects_4225ms_in")
+        checkAgainstScreenshot("standard_info_bar_with_all_effects_4225ms_in")
     }
 
     @Test
-    fun genericInfoBar_calledWhenAnotherMessageIsAlreadyDisplayed_matchesScreenshots() {
+    fun standardInfoBar_calledWhenAnotherMessageIsAlreadyDisplayed_matchesScreenshots() {
         rule.mainClock.autoAdvance = false
         var message: InfoBarMessage by mutableStateOf(InfoBarMessage(EXAMPLE_SHORT_STRING))
-        setContent { GenericInfoBarWithFadeAndScaleEffects(message) }
+        setContent { StandardInfoBarWithFadeAndScaleEffects(message) }
         advanceTimeBy(2000)
-        checkAgainstScreenshot("stacked_generic_info_bar_snap_1_2000ms_in")
+        checkAgainstScreenshot("stacked_standard_info_bar_snap_1_2000ms_in")
         message = InfoBarMessage(EXAMPLE_LONG_STRING)
         advanceTimeBy(64)
-        checkAgainstScreenshot("stacked_generic_info_bar_snap_2_another_64ms_in")
+        checkAgainstScreenshot("stacked_standard_info_bar_snap_2_another_64ms_in")
         advanceTimeBy(80)
-        checkAgainstScreenshot("stacked_generic_info_bar_snap_3_another_80ms_in")
+        checkAgainstScreenshot("stacked_standard_info_bar_snap_3_another_80ms_in")
         advanceTimeBy(150)
-        checkAgainstScreenshot("stacked_generic_info_bar_snap_4_another_150ms_in")
+        checkAgainstScreenshot("stacked_standard_info_bar_snap_4_another_150ms_in")
     }
 
     @Test
@@ -195,12 +195,12 @@ class InfoBarKtTest {
     // Composables
 
     @Composable
-    private fun GenericInfoBarWithStringTitle() {
+    private fun StandardInfoBarWithStringTitle() {
         InfoBar(offeredMessage = InfoBarMessage(text = EXAMPLE_SHORT_STRING)) {}
     }
 
     @Composable
-    private fun GenericInfoBarWithStringTitleNoWrap() {
+    private fun StandardInfoBarWithStringTitleNoWrap() {
         InfoBar(
             offeredMessage = InfoBarMessage(text = EXAMPLE_SHORT_STRING),
             wrapInsideExpandedBox = false
@@ -208,7 +208,7 @@ class InfoBarKtTest {
     }
 
     @Composable
-    private fun GenericInfoBarWithStringTitleAndAction(onAction: () -> Unit = {}) {
+    private fun StandardInfoBarWithStringTitleAndAction(onAction: () -> Unit = {}) {
         InfoBar(
             offeredMessage = InfoBarMessage(
                 text = EXAMPLE_SHORT_STRING,
@@ -219,7 +219,7 @@ class InfoBarKtTest {
     }
 
     @Composable
-    private fun GenericInfoBarWithMockedOnMessageTimeout(onMessageTimeout: () -> Unit) {
+    private fun StandardInfoBarWithMockedOnMessageTimeout(onMessageTimeout: () -> Unit) {
         InfoBar(
             offeredMessage = InfoBarMessage(text = EXAMPLE_SHORT_STRING, displayTimeSeconds = 1),
             onDismiss = onMessageTimeout
@@ -227,7 +227,7 @@ class InfoBarKtTest {
     }
 
     @Composable
-    private fun GenericInfoBarWithOptionalStylingParams() {
+    private fun StandardInfoBarWithOptionalStylingParams() {
         InfoBar(
             modifier = Modifier.padding(16.dp),
             offeredMessage = InfoBarMessage(text = EXAMPLE_LONG_STRING, action = EXAMPLE_ACTION),
@@ -250,7 +250,7 @@ class InfoBarKtTest {
     }
 
     @Composable
-    private fun GenericInfoBarWithOptionalStylingParamsInMessageAndComposable() {
+    private fun StandardInfoBarWithOptionalStylingParamsInMessageAndComposable() {
         InfoBar(
             offeredMessage = InfoBarMessage(
                 text = EXAMPLE_SHORT_STRING,
@@ -266,7 +266,7 @@ class InfoBarKtTest {
     }
 
     @Composable
-    private fun GenericInfoBarWithStringResourceForTextAndAction() {
+    private fun StandardInfoBarWithStringResourceForTextAndAction() {
         InfoBar(
             offeredMessage = InfoBarMessage(
                 textStringResId = R.string.title,
@@ -276,7 +276,7 @@ class InfoBarKtTest {
     }
 
     @Composable
-    private fun GenericInfoBarWithStringResourceAndArgsForTextAndAction() {
+    private fun StandardInfoBarWithStringResourceAndArgsForTextAndAction() {
         InfoBar(
             offeredMessage = InfoBarMessage(
                 textStringResId = R.string.title_with_args,
@@ -288,12 +288,12 @@ class InfoBarKtTest {
     }
 
     @Composable
-    private fun GenericInfoBarWithNoTitleOrAction() {
+    private fun StandardInfoBarWithNoTitleOrAction() {
         InfoBar(offeredMessage = InfoBarMessage()) {}
     }
 
     @Composable
-    fun GenericInfoBarWithFadeEffectOnly() {
+    fun StandardInfoBarWithFadeEffectOnly() {
         InfoBar(
             offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
             fadeEffect = true,
@@ -303,7 +303,7 @@ class InfoBarKtTest {
     }
 
     @Composable
-    fun GenericInfoBarWithScaleEffectOnly() {
+    fun StandardInfoBarWithScaleEffectOnly() {
         InfoBar(
             offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
             fadeEffect = false,
@@ -313,7 +313,7 @@ class InfoBarKtTest {
     }
 
     @Composable
-    fun GenericInfoBarWithSlideFromTopEffectOnly() {
+    fun StandardInfoBarWithSlideFromTopEffectOnly() {
         InfoBar(
             offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
             fadeEffect = false,
@@ -323,7 +323,7 @@ class InfoBarKtTest {
     }
 
     @Composable
-    fun GenericInfoBarWithSlideFromBottomEffectOnly() {
+    fun StandardInfoBarWithSlideFromBottomEffectOnly() {
         InfoBar(
             offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
             fadeEffect = false,
@@ -333,7 +333,7 @@ class InfoBarKtTest {
     }
 
     @Composable
-    fun GenericInfoBarWithFadeAndScaleEffects(offeredMessage: InfoBarMessage = InfoBarMessage(EXAMPLE_SHORT_STRING)) {
+    fun StandardInfoBarWithFadeAndScaleEffects(offeredMessage: InfoBarMessage = InfoBarMessage(EXAMPLE_SHORT_STRING)) {
         InfoBar(
             offeredMessage = offeredMessage,
             fadeEffect = true,
@@ -343,7 +343,7 @@ class InfoBarKtTest {
     }
 
     @Composable
-    fun GenericInfoBarWithAllEffects() {
+    fun StandardInfoBarWithAllEffects() {
         InfoBar(
             offeredMessage = InfoBarMessage(EXAMPLE_SHORT_STRING),
             fadeEffect = true,

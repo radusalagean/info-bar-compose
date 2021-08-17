@@ -56,7 +56,7 @@ class MainViewModel : ViewModel() {
     val messageTypeRadioGroup = GroupConfig.RadioGroupConfig(
         groupTitle = R.string.radio_group_message_type,
         options = MessageTypeRadioGroupOptions.values().map { it.stringResId },
-        initialIndex = MessageTypeRadioGroupOptions.GENERIC.ordinal
+        initialIndex = MessageTypeRadioGroupOptions.STANDARD.ordinal
     )
     val messageAnimationCheckGroup = GroupConfig.CheckGroupConfig(
         groupTitle = R.string.check_group_message_animation,
@@ -129,7 +129,7 @@ class MainViewModel : ViewModel() {
                     customInfoBarMessage = generateCustomMessage1()
                 MessageTypeRadioGroupOptions.CUSTOM_2.ordinal ->
                     customInfoBarMessage = generateCustomMessage2()
-                MessageTypeRadioGroupOptions.GENERIC.ordinal ->
+                MessageTypeRadioGroupOptions.STANDARD.ordinal ->
                     infoBarMessage = generateMessage()
             }
         }
@@ -140,11 +140,11 @@ class MainViewModel : ViewModel() {
         customInfoBarMessage = null
     }
 
-    fun onInfoBarMessageTimeout() {
+    fun onInfoBarMessageDismiss() {
         infoBarMessage = null
     }
 
-    fun onCustomInfoBarMessageTimeout() {
+    fun onCustomInfoBarMessageDismiss() {
         customInfoBarMessage = null
     }
 
@@ -159,7 +159,7 @@ class MainViewModel : ViewModel() {
         }
 
         enum class MessageTypeRadioGroupOptions(@StringRes val stringResId: Int) {
-            GENERIC(R.string.radio_group_message_type_generic),
+            STANDARD(R.string.radio_group_message_type_standard),
             CUSTOM_1(R.string.radio_group_message_type_custom_1),
             CUSTOM_2(R.string.radio_group_message_type_custom_2)
         }
