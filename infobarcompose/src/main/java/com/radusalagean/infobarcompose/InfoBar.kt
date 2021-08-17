@@ -35,8 +35,11 @@ fun <T : BaseInfoBarMessage> InfoBar(
     backgroundColor: Color? = null,
     content: @Composable (T) -> Unit,
     fadeEffect: Boolean = true,
+    fadeEffectEasing: InfoBarEasing = InfoBarEasing(LinearEasing),
     scaleEffect: Boolean = true,
+    scaleEffectEasing: InfoBarEasing = InfoBarEasing(FastOutSlowInEasing),
     slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.NONE,
+    slideEffectEasing: InfoBarEasing = InfoBarEasing(FastOutSlowInEasing),
     enterTransitionMillis: Int = 150,
     exitTransitionMillis: Int = 75,
     wrapInsideExpandedBox: Boolean = true,
@@ -59,6 +62,8 @@ fun <T : BaseInfoBarMessage> InfoBar(
         targetState = isShown,
         label = "InfoBar - transition"
     )
+
+    fun InfoBarEasing.getEasing(): Easing = if (isShown) enterEasing else exitEasing
 
     suspend fun handleOfferedMessage() {
         if (transition.currentState && transition.targetState) {
@@ -132,7 +137,7 @@ fun <T : BaseInfoBarMessage> InfoBar(
             label = "InfoBar - alpha",
             transitionSpec = {
                 tween(
-                    easing = LinearEasing,
+                    easing = fadeEffectEasing.getEasing(),
                     durationMillis = durationMillis
                 )
             }
@@ -143,7 +148,7 @@ fun <T : BaseInfoBarMessage> InfoBar(
             label = "InfoBar - scale",
             transitionSpec = {
                 tween(
-                    easing = FastOutSlowInEasing,
+                    easing = scaleEffectEasing.getEasing(),
                     durationMillis = durationMillis
                 )
             }
@@ -154,7 +159,7 @@ fun <T : BaseInfoBarMessage> InfoBar(
             label = "InfoBar - translationY",
             transitionSpec = {
                 tween(
-                    easing = FastOutSlowInEasing,
+                    easing = slideEffectEasing.getEasing(),
                     durationMillis = durationMillis
                 )
             }
@@ -219,8 +224,11 @@ fun InfoBar(
     textStyle: TextStyle = LocalTextStyle.current,
     actionColor: Color? = null,
     fadeEffect: Boolean = true,
+    fadeEffectEasing: InfoBarEasing = InfoBarEasing(LinearEasing),
     scaleEffect: Boolean = true,
+    scaleEffectEasing: InfoBarEasing = InfoBarEasing(FastOutSlowInEasing),
     slideEffect: InfoBarSlideEffect = InfoBarSlideEffect.NONE,
+    slideEffectEasing: InfoBarEasing = InfoBarEasing(FastOutSlowInEasing),
     enterTransitionMillis: Int = 150,
     exitTransitionMillis: Int = 75,
     wrapInsideExpandedBox: Boolean = true,
@@ -282,8 +290,11 @@ fun InfoBar(
         backgroundColor = backgroundColor,
         content = contentComposable,
         fadeEffect = fadeEffect,
+        fadeEffectEasing = fadeEffectEasing,
         scaleEffect = scaleEffect,
+        scaleEffectEasing = scaleEffectEasing,
         slideEffect = slideEffect,
+        slideEffectEasing = slideEffectEasing,
         enterTransitionMillis = enterTransitionMillis,
         exitTransitionMillis = exitTransitionMillis,
         wrapInsideExpandedBox = wrapInsideExpandedBox,
