@@ -78,6 +78,7 @@ The `InfoBar` composable has 2 signatures:
 | `shape` | Shape to be applied to the `InfoBar` surface | `Shape` | ✔️ | ✔️ |
 | `backgroundColor` | Background color to be applied to the `InfoBar` surface | `Color?` | ✔️ | ✔️ |
 | `content` | The content composable to use in the `InfoBar` surface | `@Composable (T) -> Unit` | ❌ | ✔️ |
+| `textVerticalPadding` | Vertical padding for the message text | `Dp` | ✔️ | ❌ |
 | `textColor` | Color for the message text | `Color?` | ✔️ | ❌ |
 | `textFontSize` | Font size for the message text | `TextUnit` | ✔️ | ❌ |
 | `textFontStyle` | Font style for the message text | `FontStyle?` | ✔️ | ❌ |

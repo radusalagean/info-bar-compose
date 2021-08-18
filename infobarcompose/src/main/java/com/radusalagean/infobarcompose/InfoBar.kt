@@ -249,6 +249,7 @@ fun <T : BaseInfoBarMessage> InfoBar(
  * @param elevation see generic [InfoBar]
  * @param shape see generic [InfoBar]
  * @param backgroundColor see generic [InfoBar]
+ * @param textVerticalPadding Vertical padding for the message text
  * @param textColor Color for the message text
  * @param textFontSize Font size for the message text
  * @param textFontStyle Font style for the message text
@@ -279,6 +280,7 @@ fun InfoBar(
     elevation: Dp = 6.dp,
     shape: Shape = MaterialTheme.shapes.small,
     backgroundColor: Color? = null,
+    textVerticalPadding: Dp = 8.dp,
     textColor: Color? = null,
     textFontSize: TextUnit = TextUnit.Unspecified,
     textFontStyle: FontStyle? = null,
@@ -316,7 +318,7 @@ fun InfoBar(
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically)
-                        .padding(vertical = 8.dp),
+                        .padding(vertical = textVerticalPadding),
                     text = message.getTextString(),
                     color = message.textColor ?: textColor ?: MaterialTheme.colors.surface,
                     fontSize = textFontSize,

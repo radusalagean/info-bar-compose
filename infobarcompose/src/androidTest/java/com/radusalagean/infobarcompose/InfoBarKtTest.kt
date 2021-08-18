@@ -234,6 +234,7 @@ class InfoBarKtTest {
             elevation = 24.dp,
             shape = CutCornerShape(bottomEnd = 12.dp),
             backgroundColor = Color(0xFFFFBC01),
+            textVerticalPadding = 2.dp,
             textColor = Color(0xFF241A00),
             textFontSize = 8.sp,
             textFontStyle = FontStyle.Italic,
