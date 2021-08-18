@@ -186,6 +186,7 @@ More complex usage examples are available in the **sample app**.
 
 ![sample-app](https://user-images.githubusercontent.com/11408459/129859255-85e4f667-7601-49a6-9175-72cc372670ce.gif)
 
+**Photo credits:** The sample app contains 2 photos, used under [Pexels](https://www.pexels.com/license/) license. The authors of these photos are [Kittichai Chumanee](https://www.pexels.com/@kittichai-chumanee-3743016) and [Karolina Grabowska](https://www.pexels.com/@karolina-grabowska).
 
 ## License
 Apache License 2.0, see the [LICENSE](LICENSE) file for details.
