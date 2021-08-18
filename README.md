@@ -73,7 +73,7 @@ The `InfoBar` composable has 2 signatures:
 | Parameter | Description | Type | S | G |
 | --- | --- | --- | --- | --- |
 | `modifier` | Modifier to be applied to the `InfoBar` surface | `Modifier` | ✔️ | ✔️ |
-| `offeredMessage` | `InfoBarMessage` instance describing the message that should currently be displayed | `InfoBarMessage?` | ✔️ | ✔️ |
+| `offeredMessage` | `InfoBarMessage` or `BaseInfoBarMessage` subclass instance, describing the message that should be displayed | `InfoBarMessage?` | ✔️ | ✔️ |
 | `elevation` | Elevation to be applied to the `InfoBar` surface | `Dp` | ✔️ | ✔️ |
 | `shape` | Shape to be applied to the `InfoBar` surface | `Shape` | ✔️ | ✔️ |
 | `backgroundColor` | Background color to be applied to the `InfoBar` surface | `Color?` | ✔️ | ✔️ |
@@ -99,7 +99,7 @@ The `InfoBar` composable has 2 signatures:
 | `enterTransitionMillis` | Enter animation duration in milliseconds | `Int` | ✔️ | ✔️ |
 | `exitTransitionMillis` | Exit animation duration in milliseconds | `Int` | ✔️ | ✔️ |
 | `wrapInsideExpandedBox` | Maintain the shadow of the `InfoBar` even when animating the `alpha` property, by wrapping the `InfoBar` content inside a `Box` layout that fills the maximum available space. The `alpha` property is then animated on the outer `Box` instead of the `InfoBar` surface, thus not clipping the shadow when `alpha` is less than `1f`. **Note: Any modifier you pass from the outside is applied to the `InfoBar` surface, not the outer `Box` layout!** | `Boolean` | ✔️ | ✔️ |
-| `onDismiss` | Function which is called when the `InfoBar` is either timed out or dismissed by the user. **Don't forget to always null out the `InfoBarMessage` instance here!** (see usage example from above) |  `() -> Unit` | ✔️ | ✔️ |
+| `onDismiss` | Function which is called when the `InfoBar` is either timed out or dismissed by the user. **Don't forget to always null out the `InfoBarMessage` / `BaseInfoBarMessage` subclass instance here!** (see usage example from above) |  `() -> Unit` | ✔️ | ✔️ |
 
 **`InfoBarMessage` class:**
 | Parameter | Description | Type |

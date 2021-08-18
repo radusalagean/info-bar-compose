@@ -5,6 +5,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 
+/**
+ * Standard [InfoBar] message data structure.
+ *
+ * @param text Message as string
+ * @param textStringResId Message as string resource id
+ * @param textStringResArgs Arguments for [textStringResId]
+ * @param textColor Color for the message text (overrides `textColor` set in the [InfoBar] composable)
+ * @param action Action as string
+ * @param actionStringResId Action as string resource id
+ * @param actionStringResArgs Arguments for [actionStringResId]
+ * @param actionColor Color for the action button text
+ * (overrides `actionColor` set in the [InfoBar] composable)
+ * @param backgroundColor see [BaseInfoBarMessage.backgroundColor]
+ * @param displayTimeSeconds see [BaseInfoBarMessage.displayTimeSeconds]
+ * @param onAction Function which is called when the user presses the action button
+ */
 class InfoBarMessage(
     val text: String? = null,
     @StringRes val textStringResId: Int? = null,

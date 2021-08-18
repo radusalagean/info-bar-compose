@@ -26,6 +26,39 @@ import kotlinx.coroutines.*
 
 internal const val INFO_BAR_TEST_TAG = "InfoBar"
 
+/**
+ * Composable that displays temporary on-screen messages (Generic Version)
+ *
+ * Use this generic version if your layout requirements can't be implemented with the
+ * standard [InfoBar] composable.
+ *
+ * @param T [BaseInfoBarMessage] subclass, representing the data structure of the message
+ * @param modifier Modifier to be applied to the [InfoBar] surface
+ * @param offeredMessage [BaseInfoBarMessage] subclass instance, describing the message that
+ * should be displayed
+ * @param elevation Elevation to be applied to the [InfoBar] surface
+ * @param shape Shape to be applied to the [InfoBar] surface
+ * @param backgroundColor Background color to be applied to the [InfoBar] surface
+ * @param content The content composable to use in the [InfoBar] surface
+ * @param fadeEffect Use fading effect when the message appears and disappears?
+ * (controls the `alpha` property)
+ * @param fadeEffectEasing Easing style of the fade effect
+ * @param scaleEffect Use scaling effect when the message appears and disappears?
+ * (controls the `scaleX` / `scaleY` properties)
+ * @param scaleEffectEasing Easing style of the scale effect
+ * @param slideEffect Which sliding effect to use when the message appears and disappears?
+ * (controls the `translationY` property)
+ * @param slideEffectEasing Easing style of the slide effect
+ * @param enterTransitionMillis Enter animation duration in milliseconds
+ * @param exitTransitionMillis Exit animation duration in milliseconds
+ * @param wrapInsideExpandedBox Maintain the shadow of the [InfoBar] even when animating the
+ * `alpha` property, by wrapping the [InfoBar] content inside a [Box] layout that fills the maximum
+ * available space. The `alpha` property is then animated on the outer [Box] instead of the [InfoBar]
+ * surface, thus not clipping the shadow when `alpha` is less than `1f`. *Note: Any modifier you pass
+ * from the outside is applied to the [InfoBar] surface, not the outer [Box] layout!*
+ * @param onDismiss Function which is called when the [InfoBar] is either timed out or dismissed by
+ * the user. *Don't forget to always null out the [BaseInfoBarMessage] subclass instance here!*
+ */
 @Composable
 fun <T : BaseInfoBarMessage> InfoBar(
     modifier: Modifier = Modifier,
@@ -183,7 +216,7 @@ fun <T : BaseInfoBarMessage> InfoBar(
             }
         if (wrapInsideExpandedBox) {
             /**
-             * Note: Jetpack compose 1.0.0 will clip the shadow of an elevated item (in our case,
+             * Note: Jetpack compose will clip the shadow of an elevated item (in our case,
              *  the surface) when alpha is less than 1.0f. As a workaround, the content is wrapped
              *  inside a Box layout that fills the maximum available size. The alpha is then applied
              *  to that Box instead of the content. Disable this workaround by setting the
@@ -204,6 +237,41 @@ fun <T : BaseInfoBarMessage> InfoBar(
     }
 }
 
+/**
+ * Composable that displays temporary on-screen messages (Standard Version)
+ *
+ * This version already has a layout defined, inspired by the Material design [Snackbar].
+ * Use the generic version of the [InfoBar] and define your own layout, if you are unable to meet
+ * your UI requirements with this standard one.
+ *
+ * @param modifier see generic [InfoBar]
+ * @param offeredMessage see generic [InfoBar]
+ * @param elevation see generic [InfoBar]
+ * @param shape see generic [InfoBar]
+ * @param backgroundColor see generic [InfoBar]
+ * @param textColor Color for the message text
+ * @param textFontSize Font size for the message text
+ * @param textFontStyle Font style for the message text
+ * @param textFontWeight Font weight for the message text
+ * @param textFontFamily Font family for the message text
+ * @param textLetterSpacing Letter spacing for the message text
+ * @param textDecoration Decoration for the message text
+ * @param textAlign Alignment for the message text
+ * @param textLineHeight Line height for the message text
+ * @param textMaxLines Maximum number of lines for the message text
+ * @param textStyle Style for the message text
+ * @param actionColor Color for the action button text
+ * @param fadeEffect see generic [InfoBar]
+ * @param fadeEffectEasing see generic [InfoBar]
+ * @param scaleEffect see generic [InfoBar]
+ * @param scaleEffectEasing see generic [InfoBar]
+ * @param slideEffect see generic [InfoBar]
+ * @param slideEffectEasing see generic [InfoBar]
+ * @param enterTransitionMillis see generic [InfoBar]
+ * @param exitTransitionMillis see generic [InfoBar]
+ * @param wrapInsideExpandedBox see generic [InfoBar]
+ * @param onDismiss see generic [InfoBar]
+ */
 @Composable
 fun InfoBar(
     modifier: Modifier = Modifier,
