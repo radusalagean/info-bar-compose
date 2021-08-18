@@ -239,44 +239,43 @@ fun InfoBar(
             modifier = Modifier.padding(
                 start = 16.dp,
                 top = 6.dp,
-                end = if (message.action != null) 8.dp else 16.dp,
+                end = if (!message.getActionString().isNullOrBlank()) 8.dp else 16.dp,
                 bottom = 6.dp
             )
         ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-                ProvideTextStyle(value = textStyle) {
-                    Text(
+                Text(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically)
+                        .padding(vertical = 8.dp),
+                    text = message.getTextString(),
+                    color = message.textColor ?: textColor ?: MaterialTheme.colors.surface,
+                    fontSize = textFontSize,
+                    fontStyle = textFontStyle,
+                    fontWeight = textFontWeight,
+                    fontFamily = textFontFamily,
+                    letterSpacing = textLetterSpacing,
+                    textDecoration = textDecoration,
+                    textAlign = textAlign,
+                    lineHeight = textLineHeight,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = textMaxLines,
+                    style = textStyle
+                )
+                val actionString = message.getActionString()
+                if (!actionString.isNullOrBlank()) {
+                    TextButton(
                         modifier = Modifier
-                            .weight(1f)
                             .align(Alignment.CenterVertically)
-                            .padding(vertical = 8.dp),
-                        text = message.getTextString(),
-                        color = message.textColor ?: textColor ?: MaterialTheme.colors.surface,
-                        fontSize = textFontSize,
-                        fontStyle = textFontStyle,
-                        fontWeight = textFontWeight,
-                        fontFamily = textFontFamily,
-                        letterSpacing = textLetterSpacing,
-                        textDecoration = textDecoration,
-                        textAlign = textAlign,
-                        lineHeight = textLineHeight,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = textMaxLines
-                    )
-                    val actionString = message.getActionString()
-                    if (!actionString.isNullOrBlank()) {
-                        TextButton(
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .padding(start = 8.dp),
-                            onClick = message.onAction ?: {},
-                            colors = ButtonDefaults.textButtonColors(
-                                contentColor = message.actionColor ?: actionColor
-                                ?: SnackbarDefaults.primaryActionColor
-                            )
-                        ) {
-                            Text(actionString)
-                        }
+                            .padding(start = 8.dp),
+                        onClick = message.onAction ?: {},
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = message.actionColor ?: actionColor
+                            ?: SnackbarDefaults.primaryActionColor
+                        )
+                    ) {
+                        Text(actionString)
                     }
                 }
             }
