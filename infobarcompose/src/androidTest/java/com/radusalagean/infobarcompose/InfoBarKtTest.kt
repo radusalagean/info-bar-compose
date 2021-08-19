@@ -19,11 +19,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.radusalagean.infobarcompose.test.R
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
-import com.radusalagean.infobarcompose.test.R
-import io.mockk.*
 
 /**
  * Gold screenshots are generated on a Pixel 5 Emulator - API 31
