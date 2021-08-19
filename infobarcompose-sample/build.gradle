@@ -3,7 +3,22 @@ plugins {
     id 'kotlin-android'
 }
 
+def userHome = System.getProperty("user.home")
+def globalGradleDir = new File(userHome + "/.gradle")
+def keystorePropertiesFile = new File(globalGradleDir.absolutePath + "/keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
+    signingConfigs {
+        config {
+            keyAlias keystoreProperties['infoBarComposeKeyAlias']
+            keyPassword keystoreProperties['infoBarComposeKeyPassword']
+            storeFile new File(globalGradleDir.absolutePath + "/" + keystoreProperties['infoBarComposeStoreFile'])
+            storePassword keystoreProperties['infoBarComposeStorePassword']
+        }
+    }
+
     compileSdk Integer.parseInt(ANDROID_COMPILE_SDK_VERSION)
     buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
 
@@ -22,6 +37,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig signingConfigs.config
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
