@@ -61,14 +61,17 @@ setContent {
 ## `InfoBar` types
 
 The `InfoBar` composable has 2 signatures:
-- One for a **starndard** version, which already has a layout defined, inspired by the Material design `Snackbar`. This composable has multiple parameters exposed, allowing for increased customisability of the predefined standard layout.
+- One for a **standard** version, which already has a layout defined, inspired by the Material design `Snackbar`. This composable has multiple parameters exposed, allowing for increased customizability of the predefined standard layout.
 - One for a **generic** version, allowing to pass a composable layout defined in the client app.
 
 ## Configuration parameters
 **`InfoBar` composable:**
+
 | S | G |
 | --- | --- |
 | Available in the **Standard** `InfoBar` | Available in the **Generic** `InfoBar` |
+
+
 
 | Parameter | Description | Type | S | G |
 | --- | --- | --- | --- | --- |
@@ -103,6 +106,7 @@ The `InfoBar` composable has 2 signatures:
 | `onDismiss` | Function which is called when the `InfoBar` is either timed out or dismissed by the user. **Don't forget to always null out the `InfoBarMessage` / `BaseInfoBarMessage` subclass instance here!** (see usage example from above) |  `() -> Unit` | ✔️ | ✔️ |
 
 **`InfoBarMessage` class:**
+
 | Parameter | Description | Type |
 | --- | --- | --- |
 | `text` | Message as string | `String?` |
@@ -135,6 +139,7 @@ If the standard `InfoBar` signature does not entirely meet your requirements in 
     }
     ```
 1. **Declare the `content` composable** that defines your layout:
+   
     ```kotlin
     val content: @Composable (CustomMessage) -> Unit = { message ->
         Row {
@@ -153,7 +158,7 @@ If the standard `InfoBar` signature does not entirely meet your requirements in 
     }
     ```
 1. **Display** the message:
-    ````kotlin
+    ```kotlin
     setContent {
         YourAppTheme {
             Box(Modifier.fillMaxSize().padding(16.dp)) {
@@ -179,7 +184,7 @@ If the standard `InfoBar` signature does not entirely meet your requirements in 
         }
     }
     ```
-![custom-usage](https://user-images.githubusercontent.com/11408459/129857424-bcbfb2d6-00d0-4a1d-8bbc-19a2e01d78c5.gif)
+    ![custom-usage](https://user-images.githubusercontent.com/11408459/129857424-bcbfb2d6-00d0-4a1d-8bbc-19a2e01d78c5.gif)
 
 ## Sample App
 
