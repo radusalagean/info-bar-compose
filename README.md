@@ -1,10 +1,12 @@
-![Version](https://img.shields.io/github/v/release/radusalagean/info-bar-compose)
+![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.radusalagean/info-bar-compose/badge.svg)
 
 # InfoBar Compose
 
 An **Android Jetpack Compose library** for displaying **on-screen messages**. As opposed to the built-in `Snackbar` from the Compose Material library, the `InfoBar` can be properly displayed **without additional requirements**, like `Scaffold`, `SnackbarHost` / `SnackbarHostState`, or manually starting new coroutines to show the on-screen message.
 
 Although the **InfoBar** composable is inspired by the Snackbar, it does not aim to entirely copy its design or behavior.
+
+**Test drive this library, demo app available on [Google Play](https://play.google.com/store/apps/details?id=com.radusalagean.infobarcompose.sample)!**
 
 ![standard_info_bar_with_string_title_no_wrap_1080x181](https://user-images.githubusercontent.com/11408459/129848671-33911961-549d-4ef1-8160-2a3cbb0ecfc4.png)
 ![standard_info_bar_with_string_title_and_action_1080x181](https://user-images.githubusercontent.com/11408459/129848673-c63f64d3-53d9-4d22-b080-fe89566e4491.png)
@@ -188,7 +190,7 @@ If the standard `InfoBar` signature does not entirely meet your requirements in 
 
 ## Sample App
 
-More complex usage examples are available in the **sample app**. 
+More complex usage examples are available in the **sample app**. [Download from Google Play](https://play.google.com/store/apps/details?id=com.radusalagean.infobarcompose.sample).
 
 ![sample-app](https://user-images.githubusercontent.com/11408459/129859255-85e4f667-7601-49a6-9175-72cc372670ce.gif)
 
