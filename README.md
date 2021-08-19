@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation '' // TODO Radu: Add dependency name after publishing to MavenCentral
+    implementation 'com.radusalagean:info-bar-compose:1.0.0'
 }
 ```
 
