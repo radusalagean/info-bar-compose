@@ -1,4 +1,4 @@
-![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.radusalagean/info-bar-compose/badge.svg)
+![Maven Central](https://img.shields.io/maven-central/v/com.radusalagean/info-bar-compose?color=green&logoColor=green)
 
 # InfoBar Compose
 
@@ -195,6 +195,10 @@ More complex usage examples are available in the **sample app**. [Download from 
 ![sample-app](https://user-images.githubusercontent.com/11408459/129859255-85e4f667-7601-49a6-9175-72cc372670ce.gif)
 
 **Photo credits:** The sample app contains 2 photos, used under [Pexels](https://www.pexels.com/license/) license. The authors of these photos are [Kittichai Chumanee](https://www.pexels.com/@kittichai-chumanee-3743016) and [Karolina Grabowska](https://www.pexels.com/@karolina-grabowska).
+
+## Contributions
+
+Found a bug or have a suggestion? Please open an [issue](https://github.com/radusalagean/info-bar-compose/issues).
 
 ## License
 Apache License 2.0, see the [LICENSE](LICENSE) file for details.
