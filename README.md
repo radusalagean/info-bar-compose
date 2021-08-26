@@ -67,7 +67,7 @@ The `InfoBar` composable has 2 signatures:
 - One for a **generic** version, allowing to pass a composable layout defined in the client app.
 
 ## Configuration parameters
-**`InfoBar` composable:**
+### **`InfoBar` composable:**
 
 | S | G |
 | --- | --- |
@@ -107,7 +107,7 @@ The `InfoBar` composable has 2 signatures:
 | `wrapInsideExpandedBox` | Maintain the shadow of the `InfoBar` even when animating the `alpha` property, by wrapping the `InfoBar` content inside a `Box` layout that fills the maximum available space. The `alpha` property is then animated on the outer `Box` instead of the `InfoBar` surface, thus not clipping the shadow when `alpha` is less than `1f`. **Note: Any modifier you pass from the outside is applied to the `InfoBar` surface, not the outer `Box` layout!** | `Boolean` | ✔️ | ✔️ |
 | `onDismiss` | Function which is called when the `InfoBar` is either timed out or dismissed by the user. **Don't forget to always null out the `InfoBarMessage` / `BaseInfoBarMessage` subclass instance here!** (see usage example from above) |  `() -> Unit` | ✔️ | ✔️ |
 
-**`InfoBarMessage` class:**
+### **`InfoBarMessage` class:**
 
 | Parameter | Description | Type |
 | --- | --- | --- |
