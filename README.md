@@ -2,7 +2,7 @@
 
 # InfoBar Compose
 
-An **Android Jetpack Compose library** for displaying **on-screen messages**. As opposed to the built-in `Snackbar` from the Compose Material library, the `InfoBar` can be properly displayed **without additional requirements**, like `Scaffold`, `SnackbarHost` / `SnackbarHostState`, or manually starting new coroutines to show the on-screen message.
+An **Android Jetpack Compose library** for displaying **on-screen messages**. Unlike the built-in `Snackbar` from the Compose Material library, the `InfoBar` can be properly displayed **without additional requirements**, like `Scaffold`, `SnackbarHost` / `SnackbarHostState`, or manually starting new coroutines to show the on-screen message.
 
 Although the **InfoBar** composable is inspired by the Snackbar, it does not aim to entirely copy its design or behavior.
 
