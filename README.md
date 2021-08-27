@@ -200,5 +200,13 @@ More complex usage examples are available in the **sample app**. [Download from 
 
 Found a bug or have a suggestion? Please open an [issue](https://github.com/radusalagean/info-bar-compose/issues).
 
+## Support
+
+If you use this library and enjoy it, please support it by **starring** it on GitHub. 🌟
+
+## Further reading
+
+There is an [article](https://radusalagean.com/jetpack-compose-snackbar-alternative-infobar-compose-library/) available that showcases this library in a bit more detail.
+
 ## License
 Apache License 2.0, see the [LICENSE](LICENSE) file for details.
