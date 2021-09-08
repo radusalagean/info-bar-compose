@@ -1,4 +1,5 @@
-![Maven Central](https://img.shields.io/maven-central/v/com.radusalagean/info-bar-compose?color=green&logoColor=green)
+[![Maven Central](https://img.shields.io/maven-central/v/com.radusalagean/info-bar-compose?color=green&logoColor=green)](https://search.maven.org/artifact/com.radusalagean/info-bar-compose)
+[![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-InfoBar%20Compose-green.svg?style=flat )]( https://android-arsenal.com/details/1/8254)
 
 # InfoBar Compose
 
