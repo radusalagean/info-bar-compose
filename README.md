@@ -14,12 +14,12 @@ Although the **InfoBar** composable is inspired by the Snackbar, it does not aim
 
 ## [Ad] [🆕 2025] ⛑️ Let's work together
 
-- Looking for an **experienced Native Android Developer**? I’m here to help! Here's what you can expect from me:
+- Looking for an **experienced Android App Developer**? I’m here to help! Here's what you can expect from me:
     - 🗓️ **5+ years of professional Android development experience**
     - 👀 **Trained eyes** in selecting the right tools and architectural patterns for your needs
     - ▶️ **Google Play** App publishing
     - 📄 Available for **flexible B2B contracts** (Fixed-term, per project, full-time, etc.)
-    - 🤝 **Transparency**: Every billed hour will be properly tagged, so you'll know exactly what you’re paying for
+    - 🤝 **Transparent & predictable workflow** ([see details](https://github.com/radusalagean))
     - ✉️ ➡️ [contact@radusalagean.com](mailto:contact@radusalagean.com?subject=Let%27s%20work%20together) 
 
 ## Usage
