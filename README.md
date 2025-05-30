@@ -12,16 +12,6 @@ Although the **InfoBar** composable is inspired by the Snackbar, it does not aim
 ![standard_info_bar_with_string_title_no_wrap_1080x181](https://user-images.githubusercontent.com/11408459/129848671-33911961-549d-4ef1-8160-2a3cbb0ecfc4.png)
 ![standard_info_bar_with_string_title_and_action_1080x181](https://user-images.githubusercontent.com/11408459/129848673-c63f64d3-53d9-4d22-b080-fe89566e4491.png)
 
-## [Ad] [🆕 2025] ⛑️ Let's work together
-
-- Looking for an **experienced Android App Developer**? I’m here to help! Here's what you can expect from me:
-    - 🗓️ **5+ years of professional Android development experience**
-    - 👀 **Trained eyes** in selecting the right tools and architectural patterns for your needs
-    - ▶️ **Google Play** App publishing
-    - 📄 Available for **flexible B2B contracts** (Fixed-term, per project, full-time, etc.)
-    - 🤝 **Transparent & predictable workflow** ([see details](https://github.com/radusalagean))
-    - ✉️ ➡️ [contact@radusalagean.com](mailto:contact@radusalagean.com?subject=Let%27s%20work%20together) 
-
 ## Usage
 
 Include the library in your module-level `build.gradle` file:
